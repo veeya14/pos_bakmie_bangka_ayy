@@ -1,0 +1,1515 @@
+/* === VARIABEL WARNA === */
+:root {
+    --main-yellow: #f7b42c;
+    --main-yellow-alt: #ffbc33;
+    --text-gray: #8c8c8c;
+    --text-brown: #7b6b5d;
+    --bg-white: #fff;
+}
+
+/* === LOGIN PAGE === */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 40px;
+    padding: 40px;
+}
+
+.form-login {
+    border-radius: 10px;
+    padding: 25px 35px;
+    max-width: 450px;
+    width: 100%;
+    background-color: var(--bg-white);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.form-label {
+    font-weight: 400;
+    color: black;
+}
+
+.text-field,
+.form-rounded {
+    border-radius: 10px;
+    width: 100%;
+    height: 43px;
+}
+
+.button-style {
+    background-color: var(--main-yellow);
+    color: #fff;
+    border-radius: 10px;
+    width: 126px;
+    height: 44px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.button-style:hover {
+    background-color: var(--main-yellow-alt);
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    position: fixed;
+    height: 100%;
+    overflow-x: hidden;
+    background-color: #fff;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+.sidebar img {
+    width: 100px;
+    margin-bottom: 2rem;
+}
+
+.sidebar .nav-link {
+    color: #8c8c8c;
+    font-weight: 450;
+    margin: 10px 0;
+    border-radius: 10px;
+    transition: all 0.5s ease;
+}
+
+.sidebar .nav-link.active {
+    background-color: #ffbc33;
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+.main-content {
+    margin-left: 16rem;
+    overflow-x: hidden;
+}
+.logout {
+    margin-top: auto;
+    text-decoration: none;
+}
+
+.logout i {
+    margin-right: 5px;
+}
+
+/* === MENU CARD === */
+.menu-card {
+    border-radius: 16px;
+    border: 1px solid #eee;
+    overflow: hidden;
+    text-align: start;
+    transition: transform 0.2s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+}
+
+.menu-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.menu-card .card-body {
+    padding: 10px;
+}
+
+.menu-card h6 {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.menu-card p {
+    color: var(--text-gray);
+    margin-bottom: 8px;
+}
+
+.menu-card .btn {
+    font-size: 13px;
+    padding: 4px 8px;
+    border-width: 1.3px;
+    border-radius: 8px;
+}
+
+/* btn add menu to cart customer */
+.btn-plus {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 2px solid var(--Foundation-Orange-Normal, #d65a31);
+    color: #000; /* warna ikon hitam */
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: medium;
+}
+
+/* Icon Keranjang */
+.cart-icon-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 100px;
+    border: 1px solid #d3d3d3;
+    background: #fff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    z-index: 10;
+}
+
+/* Biar lebih pas di HP kecil */
+@media (max-width: 576px) {
+    .cart-icon-btn {
+        width: 40px;
+        height: 40px;
+        top: 15px;
+        right: 15px;
+        font-size: 20px;
+    }
+}
+
+.cart-icon-btn:hover {
+    background: #f9f9f9;
+    transform: scale(1.05);
+    transition: 0.2s ease;
+}
+
+.category-btn .btn:hover {
+    background-color: #e0c181;
+    color: #fff;
+    border-color: #e0c181;
+}
+
+.category-btn .btn.active {
+    background-color: #ffbc33;
+    color: #fff;
+    border: none;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .menu-card img {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .menu-card {
+        width: 100%;
+    }
+
+    .login-container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+}
+
+/* Dashboard Not Final */
+.card {
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.chart-container {
+    border: none !important;
+    background: transparent !important;
+    overflow: hidden;
+    border-radius: 1rem; /* biar sudut chart ikut melengkung */
+}
+
+canvas {
+    border: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    height: 52px;
+    display: flex;
+    padding: 5px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+/* Bagian kiri: ikon + input */
+.search-bar .left-section {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* jarak antara ikon dan teks */
+}
+
+/* Input style */
+.search-bar input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #232323;
+    width: 200px;
+}
+
+/* Warna dan ukuran ikon */
+.search-bar i {
+    font-size: 20px;
+    color: #232323;
+    cursor: pointer;
+}
+
+/* Banner */
+.promo-banner {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #f9c74f 0.03%, #fff1b5 70.3%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    margin: 0 auto; /* center dalam parent */
+    overflow: visible;
+}
+
+/* Teks & tombol: gunakan ukuran relatif agar bisa scale */
+.promo-text h5 {
+    color: #232323;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+}
+
+/* tombol promo (tetap visual sama) */
+.promo-btn {
+    background-color: #e65c1c;
+    width: 92px;
+    height: 25px;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-family: "Plus Jakarta Sans";
+    font-weight: 600;
+    font-size: 9px;
+    cursor: pointer;
+}
+
+/* Gambar kanan: gunakan ukuran relatif maksimum */
+.promo-image {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* default gambar: skala relatif agar ikut lebar banner */
+.promo-image .Bakmie {
+    margin-left: 20px;
+    width: clamp(90px, 11.5vw, 135px); /* skala responsif: min 90, max 135 */
+    height: auto;
+    transform: rotate(-8.045deg);
+    flex-shrink: 0;
+    aspect-ratio: 134/111;
+}
+
+.promo-image .Esteh {
+    position: absolute;
+    left: -27px;
+    top: -2px;
+    height: clamp(70px, 9vw, 100px); /* skala responsif: min 70, max 100 */
+    transform: rotate(-5deg);
+}
+
+@media (max-width: 576px) {
+    .promo-banner {
+        width: 357px; /* pakai ukuran yang kamu inginkan di mobile */
+        height: 115px; /* kunci height sesuai desain */
+        padding: 10px 20px;
+        flex-wrap: nowrap; /* tetap satu baris seperti desain */
+    }
+
+    .promo-text h5 {
+        font-size: 18px; /* sama seperti desainmu */
+    }
+
+    .promo-image .Bakmie {
+        width: 135px; /* ukuran eksak sesuai CSS awal */
+        height: 100px;
+    }
+
+    .promo-image .Esteh {
+        height: 100px;
+        left: -27px;
+        top: -2px;
+    }
+
+    .promo-btn {
+        width: 92px;
+        height: 25px;
+        font-size: 9px;
+    }
+}
+
+/* Category Content */
+.head-category {
+    color: #232323;
+    font-family: "Plus Jakarta Sans";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-left: 16px;
+}
+
+.category-borderOff {
+    border-radius: 50px;
+    border: 1px solid #efefef;
+    background: #f6f6f6;
+    color: #232323;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    padding: 8px 16px;
+    white-space: nowrap; /* biar teks gak pecah ke bawah */
+}
+
+.category-borderOn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 50px;
+    border: none;
+    background: var(--Foundation-Yellow-Normal, #ffbc33);
+    color: #fff;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    padding: 8px 16px;
+    white-space: nowrap;
+}
+
+.category-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.category-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none; /* Firefox */
+    -webkit-overflow-scrolling: touch; /* smooth scroll di iOS */
+    padding: 0 16px; /* sedikit jarak kanan kiri biar gak mepet */
+}
+
+.category-scroll::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.category-scroll button {
+    flex-shrink: 0; /* biar ukuran tombol tetap */
+}
+
+/* ==============================
+   Responsif
+============================== */
+@media (max-width: 576px) {
+    .head-category {
+        font-size: 14px;
+    }
+
+    .category-scroll {
+        gap: 8px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .category-borderOn,
+    .category-borderOff {
+        font-size: 11px;
+        padding: 7px 14px;
+    }
+}
+
+/* Detail Menu */
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+
+.back-btn {
+    border: 1px solid #d9d9d9;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #232323;
+    background: #fff;
+}
+
+.header-title {
+    font-weight: 600;
+    color: #232323;
+    font-size: 18px;
+}
+
+.header-spacer {
+    width: 36px;
+}
+
+/* Banner */
+.banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1; /* bagi ruang secara proporsional */
+}
+
+.banner img {
+    width: 70%;
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.15));
+    margin-top: 10%;
+}
+
+/* Content */
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.content-wrapper {
+    background-color: #fff;
+    border-radius: 20px 20px 0 0;
+    margin-top: auto; /* dorong ke bawah */
+    padding: 24px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.content-fixed {
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    padding: 24px;
+    height: 400px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.title-price h2 {
+    color: #232323;
+    font-family: "Plus Jakarta Sans";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.title-price span {
+    color: var(--Foundation-White-Darker, #595959);
+    font-family: "Plus Jakarta Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.desc {
+    color: var(--Foundation-White-Darker, #595959);
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+/* Quantity */
+.quantity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+    gap: 24px;
+}
+
+.quantity button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #cfcfcf;
+    background: #fff;
+    color: #f7b42c;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.quantity span {
+    font-size: 18px;
+    font-weight: 600;
+    color: #232323;
+}
+
+/* Textarea */
+textarea {
+    width: 100%;
+    height: 83px;
+    border: 1px solid #cfcfcf;
+    border-radius: 20px;
+    padding: 12px;
+    margin-top: 24px;
+    font-size: 13px;
+}
+
+/* Button Add to Cart */
+.btn-cart {
+    width: 100%;
+    background: #ffb800;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 0;
+    font-weight: 600;
+    font-size: 15px;
+    margin-top: 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .banner img {
+        width: 80%;
+    }
+    .content {
+        padding: 20px;
+    }
+}
+
+/* Garis Bates Nama Menu dn Harga ke deskripsi */
+
+.line {
+    width: 345px;
+    height: 0;
+    flex-shrink: 0;
+    stroke-width: 1px;
+    stroke: var(--foundation-white-normal-hover, #e6e6e6);
+}
+
+.menu-detail-page {
+    height: 100vh;
+    width: 100%;
+    background-color: #fff6e9;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* untuk halaman order */
+.page-wrapper {
+    background-color: #f8f8f8;
+    min-height: 100vh;
+    padding: 20px 0;
+    padding-top: 128px;
+    padding-bottom: 110px;
+    box-sizing: border-box;
+}
+
+/* HEADER */
+.order-header-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; /* full width */
+    max-width: none; /* hilangkan batas max-width */
+    height: 108px;
+    background: #fff;
+    border-radius: 0 0 15px 15px;
+    border: 1px solid #f5f5f5;
+    display: flex;
+    align-items: center;
+    padding: 0 20px; /* padding kiri kanan */
+    z-index: 1;
+}
+
+.order-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.order-spacer {
+    width: 36px;
+}
+
+.order-title {
+    color: #232323;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+
+/* CUSTOMER NAME BOX */
+.customer-box {
+    width: 90%;
+    max-width: 344px;
+    height: auto;
+    border-radius: 15px;
+    border: 1px solid #f5f5f5;
+    background: #fff;
+    padding: 15px;
+    margin: 0 auto 20px;
+    box-sizing: border-box;
+}
+
+.customer-label {
+    display: block;
+    color: #232323;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.customer-input {
+    width: 100%;
+    height: 47px;
+    border: none;
+    border-radius: 10px;
+    background: #fafafa;
+    padding: 10px 12px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.customer-input::placeholder {
+    color: #999;
+}
+
+/* ORDER SUMMARY SECTION */
+.order-summary {
+    width: 90%;
+    max-width: 344px;
+    border-radius: 15px;
+    border: 1px solid #f5f5f5;
+    background: #fff;
+    padding: 15px;
+    margin: 0 auto 20px;
+    box-sizing: border-box;
+}
+
+.order-summary-title {
+    color: #232323;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* MENU ITEM */
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.menu-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.menu-name {
+    color: #232323;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.menu-price {
+    color: #595959;
+    font-family: "Plus Jakarta Sans";
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.menu-img-wrapper {
+    width: 75px;
+    height: 60px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: #fff5e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.menu-img {
+    width: 52px;
+    height: 40px;
+    object-fit: contain;
+}
+
+/* NOTE BUTTON */
+.note-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #fafafa;
+    border: none;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+/* QTY BUTTONS */
+.menu-qty {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.qty-btn {
+    width: 26px;
+    height: 26px;
+    border: 1px solid #cfcfcf;
+    border-radius: 50%;
+    background: none;
+    color: #f5b000;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* ADD MORE SECTION */
+.add-more {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.add-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-title {
+    color: #232323;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.add-desc {
+    color: #7a7a7a;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.add-btn {
+    border-radius: 20px;
+    border: 1px solid #f5b000;
+    color: #f5b000;
+    background: #fff;
+    padding: 5px 15px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* PAYMENT BOX */
+.payment-box {
+    width: 90%;
+    max-width: 344px;
+    height: auto;
+    flex-shrink: 0;
+    border-radius: 15px;
+    border: 1px solid #f5f5f5;
+    background: #fff;
+    padding: 15px;
+    margin: 0 auto 20px;
+    box-sizing: border-box;
+}
+
+/* FOOTER */
+.fixed-order-footer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 390px; /* tetap sesuai desain */
+    height: 91px;
+    border-radius: 15px 15px 0 0;
+    background: #fff;
+    display: flex;
+    justify-content: space-between; /* horizontal */
+    align-items: center;
+    padding: 15px 20px;
+    z-index: 999;
+}
+
+/* btn-ordernow tetap sama */
+.btn-ordernow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 126px;
+    height: 44px;
+    border-radius: 10px;
+    border: none;
+    background: #f7b42c;
+    color: #fff;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* CUSTOM RADIO */
+.custom-radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Hide real radio */
+.custom-radio input[type="radio"] {
+    opacity: 0;
+    position: absolute;
+}
+
+/* Outer circle */
+.radio-circle {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #e6a92e;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* Inner circle hidden by default */
+.radio-circle::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: #ffbc33;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
+}
+
+/* Show inner circle when checked */
+.custom-radio input[type="radio"]:checked + .radio-circle::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Pastikan tidak ada display:block atau visibility lain di .radio-circle::before */
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 576px) {
+    .order-header-box {
+        max-width: 95%;
+        height: 90px;
+        padding: 12px;
+    }
+
+    .order-title {
+        font-size: 18px;
+    }
+
+    .customer-box,
+    .order-summary,
+    .payment-box {
+        width: 95%;
+        max-width: none;
+    }
+
+    .menu-img-wrapper {
+        width: 60px;
+        height: 50px;
+    }
+
+    .menu-img {
+        width: 42px;
+        height: 32px;
+    }
+
+    .note-btn {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+
+    .qty-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+    }
+
+    .add-title {
+        font-size: 12px;
+    }
+
+    .add-desc {
+        font-size: 11px;
+    }
+
+    .add-btn {
+        font-size: 12px;
+        padding: 4px 12px;
+    }
+
+    .btn-ordernow {
+        width: 110px;
+        height: 40px;
+        font-size: 11px;
+    }
+
+    @media (max-width: 400px) {
+        .fixed-order-footer {
+            width: 95%; /* responsive tetap horizontal */
+            padding: 12px;
+        }
+    }
+}
+
+/* modal yakin pesan */
+/* Overlay hitam transparan */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 9999; /* Naikkan z-index */
+}
+
+/* Bottom sheet */
+.bottom-sheet {
+    position: fixed;
+    left: 0;
+    bottom: -100%;
+    width: 100%;
+    height: 310px;
+    background: #fff;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    transition: bottom 0.3s ease;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.bottom-sheet.show {
+    bottom: 0;
+}
+
+.sheet-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.content-img {
+    width: 100px;
+    height: 150px;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.overlay-textMain {
+    color: #000;
+    font-family: "Plus Jakarta Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-bottom: 1px;
+}
+
+.overlay-textMini {
+    color: #000;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.overlay-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-Outline {
+    width: 145px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid #f7b42c;
+    color: #f7b42c;
+    background: #fff;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-right: 16px;
+}
+
+.btn-solidd {
+    width: 146px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #f7b42c;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+ordersent.css: .orderSent-wrapper {
+    background: #fafafa;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    padding-top: 15px;
+    font-family: "Plus Jakarta Sans";
+}
+
+/* CARD CUSTOMER INFO */
+.orderSent-card {
+    width: 90%;
+    max-width: 344px;
+    border-radius: 15px;
+    border: 1px solid #f5f5f5;
+    background: #fff;
+    padding: 15px;
+    margin: 0 auto 20px;
+    box-sizing: border-box;
+}
+
+.orderSent-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.orderSent-label {
+    font-size: 13px;
+    color: #595959;
+    font-weight: 500;
+}
+
+.orderSent-value {
+    font-size: 13px;
+    color: #232323;
+    font-weight: 600;
+}
+
+/* TOTAL PAYMENT */
+.totalPay-box {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e6e6e6;
+}
+
+.totalPay-label {
+    color: #737373;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.totalPay-value {
+    color: #232323;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* CANCEL BOX */
+.orderSent-cancelBox {
+    position: relative;
+    width: 300px;
+    height: 48px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.orderSent-cancelProgress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%; /* JS akan isi 0 → 100 */
+    background: #ff3b30;
+    opacity: 0.25;
+    border-radius: 10px;
+    z-index: 1; /* DI BAWAH TEXT */
+}
+
+.orderSent-cancelBtn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* IKUTI wrapper */
+    height: 100%;
+    border-radius: 10px;
+    border: 1px solid #ff3b30;
+    background: rgba(255, 194, 191, 0.5);
+    font-size: 15px;
+    font-weight: 600;
+    color: #ff3b30;
+    z-index: 2; /* DI ATAS progress */
+}
+
+payent.css: .qris-page {
+    background-color: #f8f8f8;
+}
+
+.header-qris {
+    width: 100%;
+    max-width: none;
+    height: 108px;
+    flex-shrink: 0;
+    border-radius: 0 0 15px 15px;
+    border: 1px solid #f5f5f5;
+    background: #fff;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+}
+
+.qris-title {
+    color: #232323;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.qris-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin-top: 24px;
+}
+
+.qr-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 320px;
+    height: 250px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #fff;
+    margin-bottom: 24px;
+}
+
+.btn-unduh {
+    width: 327px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    border: none;
+    background: #f7b42c;
+    color: #fff;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.btn-share {
+    width: 327px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    border: 1px solid #f7b42c;
+    color: #f7b42c;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    background: #fff;
+}
+
+.timer-box {
+    width: 320px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 2px;
+    background: var(--foundation-yellow-light-active, #ffeac0);
+    text-align: center;
+}
+
+.qris-price {
+    width: 100%;
+    max-width: none;
+    height: 71px;
+    flex-shrink: 0;
+    background: #fff;
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.qris-totalPrice {
+    color: #232323;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    justify-content: space-between;
+}
+
+.qrisName {
+    color: #232323;
+    font-family: "Plus Jakarta Sans";
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.qris-btnBorder {
+    width: 100%;
+    max-width: none;
+    height: 188px;
+    flex-shrink: 0;
+    background: #fff;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    margin-top: 12px;
+    justify-items: center;
+}
+
+/* payment sucess */
+body.paySuccess-body {
+    margin: 0;
+    padding: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background: #ffffff;
+    text-align: center;
+    color: #232323;
+}
+
+.paySuccess-container {
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.paySuccess-checkIcon {
+    width: 120px;
+    height: 120px;
+    background: #ffc233;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+    margin-bottom: 24px;
+}
+
+.paySuccess-checkIcon span {
+    font-size: 60px;
+    color: white;
+}
+
+/* Pembayaran Berhasil */
+.paySuccess-title {
+    margin-top: 25px;
+    color: #232323;
+    font-family: "Plus Jakarta Sans";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    margin-bottom: 20px;
+}
+
+/* tanggal & kode */
+.paySuccess-info {
+    color: #595959;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+/* Total harga */
+.paySuccess-price {
+    margin-top: 20px;
+    color: #232323;
+    font-family: "Plus Jakarta Sans";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+/* via */
+.paySuccess-via {
+    margin-top: 8px;
+    color: #232323;
+    font-family: "Plus Jakarta Sans";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+/* QRIS bold */
+.paySuccess-via span {
+    font-weight: 700;
+}
+
+/* Button */
+.paySuccess-btn {
+    margin-top: 50px;
+    width: 160px;
+    height: 44px;
+    border-radius: 10px;
+    background: #f7b42c;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    text-align: center;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
