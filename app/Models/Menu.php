@@ -21,6 +21,7 @@ class Menu extends Model
         'menu_status',
         'menu_active',
         'menu_image',
+        'display_status',
     ];
 
     public function category()

@@ -18,6 +18,7 @@ class OrderDetail extends Model
         'menu_id',
         'quantity',
         'subtotal',
+        'notes',
     ];
 
 public function order()

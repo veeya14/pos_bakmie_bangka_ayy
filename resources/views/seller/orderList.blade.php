@@ -1,27 +1,26 @@
 @extends('layouts.layout')
 
 @section('content')
-{{-- Header --}}
-@include('partials.page-header', [
-    'title' => 'Order List',
-])
+
+@include('partials.page-header', ['title' => 'Order List'])
 
 <div class="container-fluid px-4">
-    {{-- Filter dan Pencarian --}}
-    <form method="GET" class="d-flex flex-wrap align-items-center gap-3 mb-4">
-        <input type="text" name="search" value="{{ request('search') }}" class="form-control w-auto shadow-sm" placeholder="Search Order ID" />
-        <select name="status" class="form-select w-auto shadow-sm">
-            <option value="">All Status</option>
-            <option value="OPEN" {{ request('status')=='OPEN'?'selected':'' }}>In Progress</option>
-            <option value="CLOSE" {{ request('status')=='CLOSE'?'selected':'' }}>Finish</option>
-        </select>
-        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-    </form>
 
-    {{-- Tabel Daftar Pesanan --}}
+    {{-- Filter --}}
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+        <input type="text" class="form-control w-auto shadow-sm" placeholder="Search Order ID" />
+        <select class="form-select w-auto shadow-sm">
+            <option value="">All Status</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Finish">Finish</option>
+        </select>
+    </div>
+
+    {{-- TABLE --}}
     <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4">
-            <table class="table table-hover align-middle mb-0">
+        <div class="card-body p-4 table-responsive" style="overflow: visible !important;">
+
+            <table class="table table-hover align-middle mb-0" style="position: relative;">
                 <thead class="table-light">
                     <tr>
                         <th>Date</th>
@@ -29,115 +28,182 @@
                         <th>Customer Name</th>
                         <th>Payment Method</th>
                         <th>Status</th>
-                        <th>Total Price</th>
-                        <th>Actions</th>
+                        <th>Total</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    @forelse($orders as $order)
-                    <tr>
-                        <td>{{ $order->order_datetime?->format('d-m-Y H:i') ?? '-' }}</td>
-                        <td>{{ $order->order_id }}</td>
-                        <td>{{ $order->meja->nama_customer ?? '-' }}</td>
-                        <td>{{ $order->payment->method ?? '-' }}</td>
-                        <td>
-                            @if($order->status_order == 'OPEN')
-                                <span class="badge bg-info text-dark">In Progress</span>
-                            @else
-                                <span class="badge bg-success text-dark">Finish</span>
-                            @endif
-                        </td>
-                        <td>Rp {{ number_format($order->orderDetails->sum('subtotal'), 0, ',', '.') }}</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                {{-- Button Modal --}}
-                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $order->order_id }}">
-                                    Order Detail
-                                </button>
+                    @foreach ($orders as $order)
+                        <tr>
 
-                                {{-- Dropdown Update Status --}}
-                                <div class="btn-group">
-                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                                        Update Status
+                            {{-- DATE --}}
+                            <td>{{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y') }}</td>
+
+                            {{-- ORDER ID --}}
+                            <td>{{ $order->order_id }}</td>
+
+                            {{-- CUSTOMER --}}
+                            <td>{{ $order->customer_name }}</td>
+
+                            {{-- PAYMENT --}}
+                            <td>{{ $order->payment?->payment_method ?? 'QRIS' }}</td>
+
+                            {{-- STATUS BADGE (NO WAITING ANYMORE) --}}
+                            <td>
+                                @if ($order->status_order === 'OPEN' && $order->status_bayar === 'PAID')
+                                    <span class="badge bg-info text-dark">In Progress</span>
+
+                                @elseif ($order->status_order === 'CLOSE' && $order->status_bayar === 'PAID')
+                                    <span class="badge bg-success">Finish</span>
+
+                                @elseif ($order->status_order === 'CLOSE' && $order->status_bayar === 'UNPAID')
+                                    <span class="badge bg-danger">Cancel</span>
+
+                                @else
+                                    {{-- DEFAULT → IN PROGRESS --}}
+                                    <span class="badge bg-info text-dark">In Progress</span>
+                                @endif
+                            </td>
+
+                            {{-- TOTAL --}}
+                            <td>Rp {{ number_format($order->details->sum('subtotal'), 0, ',', '.') }}</td>
+
+                            {{-- ACTION --}}
+                            <td>
+                                <div class="d-flex gap-2">
+
+                                    {{-- DETAIL --}}
+                                    <button class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#orderDetailModal{{ $order->order_id }}">
+                                        Detail
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <form method="POST" action="{{ route('seller.orders.updateStatus', $order->order_id) }}">
-                                                @csrf
-                                                <input type="hidden" name="status_order" value="OPEN">
-                                                <button type="submit" class="dropdown-item">In Progress</button>
-                                            </form>
-                                        </li>
-                                        <li>
-                                            <form method="POST" action="{{ route('seller.orders.updateStatus', $order->order_id) }}">
-                                                @csrf
-                                                <input type="hidden" name="status_order" value="CLOSE">
-                                                <button type="submit" class="dropdown-item">Finish</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
 
-                    {{-- Modal Detail Order --}}
-                    <div class="modal fade" id="detailModal{{ $order->order_id }}" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content border-0 rounded-4 shadow">
-                                <div class="modal-header border-0">
-                                    <h5 class="modal-title">Detail Order #{{ $order->order_id }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>Date:</strong> {{ $order->order_datetime?->format('d-m-Y H:i') ?? '-' }}</p>
-                                    <p><strong>Customer:</strong> {{ $order->meja->nama_customer ?? '-' }}</p>
-                                    <p><strong>Payment Method:</strong> {{ $order->payment->method ?? '-' }}</p>
-                                    <hr>
-                                    <table class="table align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>Menu</th>
-                                                <th>Qty</th>
-                                                <th>Subtotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($order->orderDetails as $detail)
-                                            <tr>
-                                                <td>{{ $detail->menu->menu_name ?? '-' }}</td>
-                                                <td>{{ $detail->quantity }}</td>
-                                                <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    <div class="text-end fw-bold mt-3">
-                                        Total: Rp {{ number_format($order->orderDetails->sum('subtotal'), 0, ',', '.') }}
+                                    {{-- UPDATE STATUS --}}
+                                    <div class="dropdown order-status-dropdown">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown">
+                                            Update Status
+                                        </button>
+
+                                        <ul class="dropdown-menu status-menu">
+                                            {{-- IN PROGRESS --}}
+                                            <li>
+                                                <form action="{{ route('seller.orders.updateStatus', $order->order_id) }}"
+                                                      method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="status_ui" value="IN_PROGRESS">
+                                                    <button type="submit" class="dropdown-item">
+                                                        In Progress
+                                                    </button>
+                                                </form>
+                                            </li>
+
+                                            {{-- SENT --}}
+                                            <li>
+                                                <form action="{{ route('seller.orders.updateStatus', $order->order_id) }}"
+                                                      method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="status_ui" value="SENT">
+                                                    <button type="submit" class="dropdown-item">
+                                                        Finish
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
                                     </div>
+
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="text-center">No orders found</td>
-                    </tr>
-                    @endforelse
+                            </td>
+
+                        </tr>
+                    @endforeach
                 </tbody>
+
             </table>
+
+        </div>
+    </div>
+
+</div>
+
+
+{{-- DETAIL MODALS --}}
+@foreach ($orders as $order)
+<div class="modal fade" id="orderDetailModal{{ $order->order_id }}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Order #{{ $order->order_id }}</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y') }}</p>
+                <p><strong>Name:</strong> {{ $order->customer_name }}</p>
+                <p><strong>Payment:</strong>  {{ $order->payment?->payment_method ?? 'QRIS' }}</p>
+                <hr>
+
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Menu</th>
+                            <th>Qty</th>
+                            <th>Notes</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach ($order->details as $detail)
+                            <tr>
+                                <td>{{ $detail->menu->menu_name ?? 'Menu deleted' }}</td>
+                                <td>{{ $detail->quantity }}</td>
+                                <td class="notes">{{ $detail->notes ?? '-' }}</td>
+                                <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <div class="text-end fw-bold mt-3">
+                    Total: Rp {{ number_format($order->details->sum('subtotal'), 0, ',', '.') }}
+                </div>
+
+            </div>
+
         </div>
     </div>
 </div>
+@endforeach
 
-{{-- CSS agar table dan modal rapi --}}
+
+{{-- FIX DROPDOWN NOT CLICKABLE & WHITE BACKGROUND --}}
 <style>
-    .modal-body {
-        overflow-x: auto;
+    .dropdown-menu.status-menu {
+        background: white !important;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+        padding: 8px 0;
+        position: absolute !important;
+        z-index: 999999 !important;
     }
-    .text-end.fw-bold {
-        border-top: 2px solid #ddd;
-        padding-top: 10px;
+
+    .dropdown-menu.status-menu .dropdown-item:hover {
+        background: #f0f0f0 !important;
+    }
+
+    /* Notes wrapping */
+    .table td.notes {
+        white-space: normal !important;
+        max-width: 280px;
     }
 </style>
+
 @endsection

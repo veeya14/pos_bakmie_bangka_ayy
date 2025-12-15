@@ -13,13 +13,13 @@ use Illuminate\Support\Carbon;
 
 class SellerAuthController extends Controller
 {
-    // === SHOW LOGIN PAGE ===
+    
     public function showLogin()
     {
         return view('seller.login');
     }
 
-    // === SHOW REGISTER PAGE ===
+
     public function showRegister()
     {
         return view('seller.register');

@@ -1,0 +1,96 @@
+.orderSent-wrapper {
+    background: #fafafa;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    padding-top: 15px;
+    font-family: "Plus Jakarta Sans";
+}
+
+/* CARD CUSTOMER INFO */
+.orderSent-card {
+    width: 90%;
+    max-width: 344px;
+    border-radius: 15px;
+    border: 1px solid #f5f5f5;
+    background: #fff;
+    padding: 15px;
+    margin: 0 auto 20px;
+    box-sizing: border-box;
+}
+
+.orderSent-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.orderSent-label {
+    font-size: 13px;
+    color: #595959;
+    font-weight: 500;
+}
+
+.orderSent-value {
+    font-size: 13px;
+    color: #232323;
+    font-weight: 600;
+}
+
+/* TOTAL PAYMENT */
+.totalPay-box {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e6e6e6;
+}
+
+.totalPay-label {
+    color: #737373;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.totalPay-value {
+    color: #232323;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* CANCEL BOX */
+.orderSent-cancelBox {
+    position: relative;
+    width: 300px;
+    height: 44px;
+    margin: 20px auto;
+    border-radius: 10px;
+    background: #ffd8d5; /* pink muda */
+    border: 1px solid #ff9b95; /* garis pink */
+    overflow: hidden;
+}
+
+.orderSent-cancelProgress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: #b52a22;
+    border-radius: 10px;
+    z-index: 1;
+    transition: width 1s linear; /* DI BAWAH TEXT */
+}
+
+.orderSent-cancelBtn {
+    position: absolute;
+    inset: 0; /* top:0;right:0;bottom:0;left:0 */
+    border: none;
+    background: transparent; /* transparan */
+    border-radius: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff; /* teks putih */
+    z-index: 2; /* di atas progress */
+    cursor: pointer; /* DI ATAS progress */
+}

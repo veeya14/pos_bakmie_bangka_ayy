@@ -19,8 +19,4 @@ class Meja extends Model
         'qr_code',
     ];
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class, 'meja_id', 'meja_id');
-    }
 }

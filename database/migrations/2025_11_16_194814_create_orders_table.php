@@ -10,16 +10,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id('order_id');
-            $table->unsignedBigInteger('meja_id');
             $table->enum('status_order', ['OPEN','CLOSE'])->default('OPEN');
             $table->enum('status_bayar', ['UNPAID','PAID'])->default('UNPAID');
             $table->dateTime('order_datetime')->nullable();
             $table->timestamps();
 
-            $table->foreign('meja_id')
-                  ->references('meja_id')
-                  ->on('meja')
-                  ->onDelete('cascade');
         });
     }
 

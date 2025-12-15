@@ -3,60 +3,93 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    // Menampilkan semua order
-    public function index(Request $request)
+    /**
+     * ORDER LIST
+     * Hanya tampilkan:
+     * - IN PROGRESS  => status_order = OPEN  & status_bayar = PAID
+     * - SENT         => status_order = CLOSE & status_bayar = PAID
+     */
+    public function index()
     {
-        // Optional filter
-        $status = $request->status ?? null;
-        $search = $request->search ?? null;
-
-        $orders = Order::with(['meja', 'orderDetails.menu'])
-            ->when($status, function($query, $status) {
-                $query->where('status_order', $status);
+        $orders = Order::with(['details.menu', 'payment'])
+            ->where(function ($q) {
+                // IN PROGRESS
+                $q->where('status_order', 'OPEN')
+                  ->where('status_bayar', 'PAID');
             })
-            ->when($search, function($query, $search) {
-                $query->where('order_id', 'like', "%{$search}%");
+            ->orWhere(function ($q) {
+                // SENT
+                $q->where('status_order', 'CLOSE')
+                  ->where('status_bayar', 'PAID');
             })
             ->orderBy('order_datetime', 'desc')
             ->get();
 
-        return view('seller.orderList', compact('orders', 'status', 'search'));
+        return view('seller.orderList', compact('orders'));
     }
 
-    // Lihat detail order
+    /**
+     * DETAIL ORDER (kalau nanti kamu mau pakai halaman detail terpisah)
+     */
     public function show($orderId)
     {
-        $order = Order::with(['meja', 'orderDetails.menu'])->findOrFail($orderId);
+        $order = Order::with(['details.menu', 'payment'])
+            ->findOrFail($orderId);
+
         return view('seller.orderDetail', compact('order'));
     }
 
-    // Update status order
+    /**
+     * UPDATE STATUS PESANAN DARI SELLER
+     *
+     * Dari UI:
+     * - IN_PROGRESS => OPEN  + PAID  (In Progress)
+     * - SENT        => CLOSE + PAID  (Sent)
+     */
     public function updateStatus(Request $request, $orderId)
     {
-        $order = Order::findOrFail($orderId);
         $request->validate([
-            'status_order' => 'required|in:OPEN,CLOSE',
+            'status_ui' => 'required|in:IN_PROGRESS,SENT',
         ]);
 
-        $order->status_order = $request->status_order;
+        $order = Order::findOrFail($orderId);
+
+        if ($request->status_ui === 'IN_PROGRESS') {
+            // Pesanan sedang diproses
+            $order->status_order = 'OPEN';
+            $order->status_bayar = 'PAID';
+        }
+
+        if ($request->status_ui === 'SENT') {
+            // Pesanan sudah dikirim / selesai
+            $order->status_order = 'CLOSE';
+            $order->status_bayar = 'PAID';
+        }
+
         $order->save();
 
-        return redirect()->back()->with('success', 'Status order berhasil diperbarui.');
+        return back()->with('success', 'Order status updated.');
     }
 
+    /**
+     * ORDER HISTORY
+     * Menampilkan semua order yang sudah CLOSE:
+     * - FINISH = CLOSE + PAID
+     * - CANCEL = CLOSE + UNPAID
+     * (status ditentukan di Blade: seller/orderHistory.blade.php)
+     */
     public function history()
-{
-    $orders = Order::with('meja', 'orderDetails.menu', 'payment')
-                   ->where('status_order', 'CLOSE') 
-                   ->orderBy('order_datetime', 'desc')
-                   ->get();
+    {
+        $orders = Order::with(['details.menu', 'payment'])
+            ->where('status_order', 'CLOSE')
+            ->orderBy('order_datetime', 'desc')
+            ->get();
 
-    return view('seller.orderHistory', compact('orders'));
-}
-
+        return view('seller.orderHistory', compact('orders'));
+    }
 }

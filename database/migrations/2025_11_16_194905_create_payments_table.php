@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id('payment_id');
             $table->unsignedBigInteger('order_id');
-            $table->enum('payment_method', ['cash','transfer','gopay','ovo'])->default('cash');
+            $table->enum('payment_method', ['qris'])->default('cash');
             $table->decimal('amount', 10, 2);
             $table->dateTime('payment_datetime')->nullable();
             $table->timestamps();

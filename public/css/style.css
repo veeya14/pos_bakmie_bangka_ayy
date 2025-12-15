@@ -171,6 +171,101 @@
     z-index: 10;
 }
 
+/* --- CART BADGE STYLE --- */
+.cart-badge-custom {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4d4f;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+/* --- CART WOBBLE ANIMATION --- */
+@keyframes cartWobble {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-12deg); }
+    50% { transform: rotate(12deg); }
+    75% { transform: rotate(-8deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.cart-wobble-animate {
+    animation: cartWobble 0.5s ease;
+}
+
+/* --- BADGE POP EFFECT --- */
+@keyframes cartBadgePop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.cart-badge-animate {
+    animation: cartBadgePop 0.3s ease-out;
+}
+
+/* === MODERN GLASS POPUP (SLIDE UP) === */
+.added-popup {
+    position: fixed;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+
+    padding: 16px 22px;
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0px 6px 28px rgba(0,0,0,0.35);
+
+    opacity: 0;
+    scale: 0.8; /* kecil dulu */
+    transition: opacity 0.5s ease, scale 0.35s ease;
+    z-index: 99999;
+}
+
+.added-popup.show {
+    opacity: 1;
+    scale: 1; /* membesar smooth */
+}
+
+
+
+/* Icon check modern */
+.popup-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #4ade80, #22c55e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 3px 8px rgba(34,197,94,0.4);
+}
+
+
+
 /* Biar lebih pas di HP kecil */
 @media (max-width: 576px) {
     .cart-icon-btn {
@@ -347,7 +442,7 @@ canvas {
     position: absolute;
     left: -27px;
     top: -2px;
-    height: clamp(70px, 9vw, 100px); /* skala responsif: min 70, max 100 */
+    height: clamp(70px, 9vw, 100px);
     transform: rotate(-5deg);
 }
 
@@ -515,9 +610,13 @@ canvas {
     width: 70%;
     max-width: 300px;
     height: auto;
-    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.15));
+    filter: none !important;
+    box-shadow: none !important;
     margin-top: 10%;
+    background: transparent !important;
+    mix-blend-mode: normal !important; 
 }
+
 
 /* Content */
 .content {
@@ -535,11 +634,14 @@ canvas {
 
 .content-fixed {
     background: #fff;
-    border-radius: 24px 24px 0 0;
+    border-radius: 
     padding: 24px;
-    height: 400px;
+    min-height: 420px;  
+    height: auto;         
+    padding-bottom: 40px;   
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 .title-price {
     display: flex;
@@ -648,13 +750,14 @@ textarea {
 }
 
 .menu-detail-page {
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     width: 100%;
     background-color: #fff6e9;
     font-family: "Plus Jakarta Sans", sans-serif;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: visible !important;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1061,6 +1164,28 @@ textarea {
         }
     }
 }
+
+/* === NOTE SHEET FIX === */
+#noteSheet {
+    max-height: 45%;      
+    padding: 18px 22px;
+    border-radius: 22px 22px 0 0;
+}
+
+#noteSheet .sheet-content {
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.note-textarea {
+    height: 90px !important;  /* Pendekin textarea */
+    resize: none;
+}
+
+.note-btn-wrapper {
+    margin-top: 12px;
+}
+
 
 /* modal yakin pesan */
 /* Overlay hitam transparan */
@@ -1513,3 +1638,152 @@ body.paySuccess-body {
     font-weight: 700;
     line-height: normal;
 }
+
+.btn-open-detail {
+    pointer-events: auto;
+}
+
+.promo-image img {
+    mix-blend-mode: darken;
+}
+
+/* === FIX DETAIL MENU IMAGE TANPA KOTAK === */
+
+.menu-detail-page {
+    background: #fff6e9 !important;
+    box-shadow: none !important;
+}
+
+.top-wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.banner {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Bersihkan area konten putih agar tidak overlap ke gambar */
+.content-fixed {
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 24px;
+}
+
+/* === DROPDOWN SELLER ORDER LIST === */
+.order-status-dropdown .dropdown-menu {
+    background-color: #ffffff !important;
+    border: 1px solid #ddd !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important;
+}
+
+.order-status-dropdown .dropdown-item {
+    font-size: 14px;
+    font-weight: 500;
+    color: #232323 !important;
+}
+
+.order-status-dropdown .dropdown-item:hover {
+    background-color: #f5f5f5 !important;
+}
+
+#processOverlay .bottom-sheet {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    flex-direction: column;
+}
+
+.processing-box {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+.center-box {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    text-align: center;     /* ⬅ Tengah teks */
+}
+
+/* Buat seluruh halaman jadi flexbox full height */
+.paySuccess-body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;   /* center horizontal */
+    align-items: center;       /* center vertical */
+    flex-direction: column;    /* biar layout tetap urut */
+}
+
+/* Untuk mengatur posisi keseluruhan */
+.paySuccess-container {
+    transform: translateY(-20px);  /* geser sedikit ke atas (bisa ubah angka) */
+    text-align: center;
+}
+
+/* Jangan dorong isi ke bawah */
+.paySuccess-checkIcon {
+    margin-top: 0 !important;
+}
+
+.btn-order-id {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 42px;                  /* TINGGI TOMBOL PAS SEPERTI DESAIN */
+    padding: 0 25px;               /* LEBAR PAS */
+    background-color: #FFC548;
+
+    color: #ffffff !important;     /* TEKS PUTIH */
+    font-weight: 700;
+    font-size: 16px;
+
+    border-radius: 14px;           /* SAMA PERSIS DENGAN DESAIN */
+    text-decoration: none;
+    border: none;
+    white-space: nowrap;
+
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1); /* efek halus seperti figma */
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    gap: 10px;                     /* JARAK DENGAN SEARCH BAR */
+}
+
+.search-bar {
+    position: relative;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding-left: 35px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar .search-icon {
+    position: absolute;
+    left: 12px;
+    font-size: 16px;
+    color: #555;
+}
+
+.search-bar .search-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+

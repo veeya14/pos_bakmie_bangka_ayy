@@ -48,9 +48,7 @@
             <button type="submit" class="btn button-style w-100">Login</button>
         </form>
 
-        <p class="mt-3 text-center small">
-            Don't have an account? <a href="{{ route('seller.register') }}" class="text-decoration-none">Register here</a>
-        </p>
+        
     </div>
 </div>
 </body>

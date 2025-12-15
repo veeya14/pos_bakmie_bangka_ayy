@@ -1,305 +1,543 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Daftar Menu</title>
+@extends('layouts.layout')
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-</head>
-<body>
-<div class="container-fluid">
-  <div class="row flex-nowrap">
+@section('title', 'Menu')
 
-    <!-- Sidebar -->
-    @include('partials.sidebar')
+@section('content')
 
-    <!-- Main Content -->
-    <div class="col-12 col-md-10 p-3 main-content">
-
-      <!-- Header -->
-      <div class="d-none d-lg-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-semibold text-secondary">Daftar Menu</h1>
-        <button type="button"
-                class="btn text-white d-flex align-items-center gap-2 px-3 py-2 me-3"
-                style="background-color: #FFBC33; border: none; border-radius: 8px;"
-                data-bs-toggle="modal" data-bs-target="#addMenuModal">
-          <i class="bi bi-plus-lg"></i><span>Tambah Menu</span>
-        </button>
-      </div>
-
-      <!-- Kategori -->
-      <div class="mb-4 category-btn d-flex flex-wrap gap-2">
-        @foreach ($categories as $category)
-          <a href="{{ route('seller.menus.index', ['category' => $category->id_category]) }}" 
-             class="btn btn-outline-secondary {{ $selectedCategory == $category->id_category ? 'active text-white bg-warning border-warning' : '' }}">
-            {{ $category->name }}
-          </a>
-        @endforeach
-      </div>
-
-      <!-- Grid Menu -->
-      <div class="row g-4">
-        @forelse ($menu as $item)
-          <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 text-start menu-card h-100">
-              <img src="{{ $item->menu_image ? asset($item->menu_image) : asset('image/default-food.png') }}" 
-                class="card-img-top mx-auto mt-3 img-fluid rounded-4" 
-                 alt="{{ $item->menu_name }}" 
-                 style="height: 150px; object-fit: contain; object-position: center;">
-              <div class="card-body">
-                <h6 class="fw-semibold mb-1">{{ $item->menu_name }}</h6>
-                <div class="d-flex justify-content-between align-items-center">
-                  <p class="text-muted mb-0 mt-1">Rp {{ number_format($item->menu_price, 0, ',', '.') }}</p>
-                  <div class="d-flex gap-1">
-                    <!-- Edit Button -->
-                    <a href="#"
-                       class="btn btn-outline-success btn-sm rounded-3 mt-1 edit-menu-btn"
-                       data-id="{{ $item->id_menu }}"
-                       data-name="{{ $item->menu_name }}"
-                       data-category="{{ $item->id_category }}"
-                       data-price="{{ $item->menu_price }}"
-                       data-status="{{ $item->menu_status }}"
-                       data-description="{{ $item->menu_description }}"
-                       data-image="{{ $item->menu_image ? asset($item->menu_image) : '' }}"
-                       data-bs-toggle="modal"
-                       data-bs-target="#editMenuModal">
-                      <i class="bi bi-pencil"></i>
-                    </a>
-
-                    <!-- Delete Button -->
-                    <button type="button" class="btn btn-outline-danger btn-sm rounded-3 mt-1 delete-menu-btn"
+                {{-- PAGE HEADER --}}
+                @include('partials.page-header', [
+        'title' => 'Menu',
+        'button' => '
+                        <button class="btn text-white d-flex align-items-center gap-2 px-3 py-2 me-3"
+                            style="background-color: #FFBC33; border: none; border-radius: 8px;"
                             data-bs-toggle="modal"
-                            data-bs-target="#deleteMenuModal"
-                            data-form-id="delete-form-{{ $item->id_menu }}">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                    <form id="delete-form-{{ $item->id_menu }}" action="{{ route('seller.menus.destroy', $item->id_menu) }}" method="POST">
-                      @csrf
-                      @method('DELETE')
-                      <input type="hidden" name="category" value="{{ $selectedCategory }}">
+                            data-bs-target="#addMenuModal">
+                            <i class="bi bi-plus-lg"></i><span>Add Menu</span>
+                        </button>
+                    ',
+    ])
+
+                <!-- Kategori -->
+                <div class="category-scroll mb-3">
+                @foreach ($categories as $category)
+                    <form action="{{ route('seller.menus.index') }}" method="GET" class="d-inline">
+                        <input type="hidden" name="category" value="{{ $category->id_category }}">
+                        <button type="submit"
+                            class="px-3 py-1 {{ $selectedCategory == $category->id_category ? 'category-borderOn' : 'category-borderOff' }}">
+                            {{ $category->name }}
+                        </button>
                     </form>
-                  </div>
+                @endforeach
                 </div>
-              </div>
+
+<!-- GRID MENU -->
+<div class="row g-4">
+@foreach ($menu as $m)
+    <div class="col-6 col-md-3">
+
+        <!-- Card Menu -->
+        <div class="card border-0 shadow-sm rounded-4 menu-card h-100"
+            data-id="{{ $m->id_menu }}"
+            data-name="{{ $m->menu_name }}"
+            data-price="{{ $m->menu_price }}"
+            data-description="{{ $m->menu_description }}"
+            data-image="{{ asset($m->menu_image) }}"
+            data-category="{{ $m->id_category }}"
+            data-status="{{ $m->menu_status }}"
+            data-display="{{ $m->display_status }}"
+            style="cursor:pointer;">
+
+            <img src="{{ asset($m->menu_image) }}" 
+                 class="card-img-top mx-auto mt-3 img-fluid">
+
+            <div class="card-body">
+                <h6 class="fw-semibold mb-1">{{ $m->menu_name }}</h6>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="text-muted mb-0 mt-1">Rp {{ number_format($m->menu_price) }}</p>
+
+                    <div class="d-flex gap-1">
+
+                        <!-- EDIT BUTTON -->
+                        <button 
+                            class="btn btn-outline-success btn-sm rounded-3 mt-1 btnEditCard"
+                            data-id="{{ $m->id_menu }}"
+                            onclick="event.stopPropagation()">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <!-- DELETE BUTTON -->
+                        <button 
+                            class="btn btn-outline-danger btn-sm rounded-3 mt-1 btnDeleteCard"
+                            data-id="{{ $m->id_menu }}"
+                            onclick="event.stopPropagation()">
+                            <i class="bi bi-trash"></i>
+                        </button>
+
+                    </div>
+                </div>
             </div>
-          </div>
-        @empty
-          <div class="col-12 text-center text-muted py-5">
-            <i class="bi bi-emoji-frown fs-1 d-block mb-3"></i>
-            <p>Tidak ada menu untuk kategori ini.</p>
-          </div>
-        @endforelse
-      </div>
+
+        </div>
 
     </div>
-  </div>
+@endforeach
 </div>
 
-<!-- Modal Tambah Menu -->
-<div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="addMenuLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 rounded-4 shadow">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-semibold" id="addMenuLabel">Tambah Menu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body px-4">
-        <form action="{{ route('seller.menus.store') }}" method="POST" enctype="multipart/form-data">
-          @csrf
-          <div class="mb-3">
-            <label for="namaMenu" class="form-label">Nama Menu</label>
-            <input type="text" class="form-control rounded-3" id="namaMenu" name="menu_name" placeholder="Masukkan nama menu" required>
-          </div>
-          <div class="mb-3">
-            <label for="kategoriMenu" class="form-label">Kategori Menu</label>
-            <select class="form-select rounded-3" id="kategoriMenu" name="id_category" required>
-              <option value="" disabled selected>Pilih kategori menu</option>
-              @foreach ($categories as $category)
-                <option value="{{ $category->id_category }}">{{ $category->name }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="hargaMenu" class="form-label">Harga Menu</label>
-            <input type="number" class="form-control rounded-3" id="hargaMenu" name="menu_price" placeholder="Masukkan harga menu" step="0.01" required>
-          </div>
-          <div class="mb-3">
-            <label for="statusMenu" class="form-label">Status Menu</label>
-            <select class="form-select rounded-3" id="statusMenu" name="menu_status" required>
-              <option value="" disabled selected>Pilih status menu</option>
-              <option value="available">Tersedia</option>
-              <option value="sold_out">Tidak Tersedia</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="deskripsiMenu" class="form-label">Deskripsi Menu</label>
-            <textarea class="form-control rounded-3" id="deskripsiMenu" name="menu_description" rows="3" placeholder="Masukkan deskripsi menu"></textarea>
-          </div>
-          <div class="mb-4">
-            <label for="fotoMenu" class="form-label">Foto Menu</label>
-            <div class="border rounded-3 d-flex justify-content-center align-items-center" style="height: 120px; background-color: #f9f9f9;">
-              <label for="fotoMenu" class="text-muted d-flex flex-column align-items-center" style="cursor: pointer;">
-                <i class="bi bi-image fs-1"></i>
-                <small>Upload Foto</small>
-              </label>
-              <input type="file" id="fotoMenu" name="menu_image" class="d-none" accept="image/*">
+
+</div>
+
+
+<!-- ============================
+     MODAL ADD MENU 
+============================= -->
+<div class="modal fade" id="addMenuModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-semibold">Add Menu</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-          </div>
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success px-4">Save</button>
-          </div>
-        </form>
-      </div>
+
+            <div class="modal-body px-4">
+                <form action="{{ route('seller.menus.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <!-- NAME -->
+                    <div class="mb-3">
+                        <label class="form-label">Menu Name</label>
+                        <input type="text" name="menu_name" class="form-control rounded-3" required>
+                    </div>
+
+                    <!-- CATEGORY -->
+                    <div class="mb-3">
+                        <label class="form-label">Menu Category</label>
+                        <select name="id_category" class="form-select rounded-3" required>
+                            <option disabled selected>Choose Menu Category</option>
+                            @foreach ($categories as $c)
+                                <option value="{{ $c->id_category }}">{{ $c->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- PRICE -->
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="number" name="menu_price" class="form-control rounded-3" required>
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="menu_status" class="form-select rounded-3" required>
+                            <option disabled selected>Choose Menu Status</option>
+                            <option value="available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
+                        </select>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="menu_description" class="form-control rounded-3" rows="3"></textarea>
+                    </div>
+
+                    <!-- IMAGE WITH PREVIEW -->
+                    <div class="mb-3">
+                        <label class="form-label">Menu Image</label>
+
+                        <!-- Preview Box -->
+<div id="addImagePreviewBox"
+    class="border rounded-3 d-flex justify-content-center align-items-center position-relative"
+    style="height: 180px; background-color: #f9f9f9; cursor:pointer;"
+    onclick="document.getElementById('addMenuImage').click()">
+
+    <div id="addImagePlaceholder" class="text-muted d-flex flex-column align-items-center">
+        <i class="bi bi-image fs-1"></i>
+        <small>Upload Image</small>
     </div>
-  </div>
+
+    <img id="addImagePreview"
+     src=""
+     class="d-none rounded border"
+     style="width: 140px; height: 140px; object-fit: cover; position: absolute;">
 </div>
 
-<!-- Modal Edit Menu -->
-<div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 rounded-4 shadow">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-semibold" id="editMenuLabel">Edit Menu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body px-4">
-        <form id="editMenuForm" method="POST" enctype="multipart/form-data">
-          @csrf
-          @method('PUT')
-          <!-- Fields sama seperti add -->
-          <div class="mb-3">
-            <label for="editNamaMenu" class="form-label">Nama Menu</label>
-            <input type="text" class="form-control rounded-3" id="editNamaMenu" name="menu_name" required>
-          </div>
-          <div class="mb-3">
-            <label for="editKategoriMenu" class="form-label">Kategori Menu</label>
-            <select class="form-select rounded-3" id="editKategoriMenu" name="id_category" required>
-              <option value="" disabled>Pilih kategori menu</option>
-              @foreach ($categories as $category)
-                <option value="{{ $category->id_category }}">{{ $category->name }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="editHargaMenu" class="form-label">Harga Menu</label>
-            <input type="number" class="form-control rounded-3" id="editHargaMenu" name="menu_price" step="0.01" required>
-          </div>
-          <div class="mb-3">
-            <label for="editStatusMenu" class="form-label">Status Menu</label>
-            <select class="form-select rounded-3" id="editStatusMenu" name="menu_status" required>
-              <option value="" disabled>Pilih status menu</option>
-              <option value="available">Tersedia</option>
-              <option value="sold_out">Tidak Tersedia</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="editDeskripsiMenu" class="form-label">Deskripsi Menu</label>
-            <textarea class="form-control rounded-3" id="editDeskripsiMenu" name="menu_description" rows="3"></textarea>
-          </div>
-          <div class="mb-4">
-            <label class="form-label">Foto Menu</label>
-            <div class="d-flex flex-column align-items-center">
-              <img id="editFotoPreview" src="" alt="Foto Menu" class="img-fluid rounded-3 mb-2" style="height: 120px; object-fit: contain; background-color: #f9f9f9; width: 100%;">
-              <button type="button" class="btn btn-outline-primary btn-sm mb-2" id="editFotoBtn">Ganti Foto</button>
-              <input type="file" id="editFotoMenu" name="menu_image" class="d-none" accept="image/*">
+
+                        <input type="file" id="addMenuImage" name="menu_image" class="d-none" accept="image/*">
+
+                        <small class="text-muted">Accepted: PNG, JPG, JPEG (Max 10 MB)</small>
+                    </div>
+
+                    <!-- DISPLAY -->
+                    <div class="mb-3">
+                        <label class="form-label">Display Status</label>
+                        <select name="display_status" class="form-select rounded-3" required>
+                            <option disabled selected>Choose Display Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success px-4">Save</button>
+                    </div>
+                </form>
             </div>
-          </div>
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success px-4">Update</button>
-          </div>
-        </form>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 
-<!-- Modal Delete Menu -->
-<div class="modal fade" id="deleteMenuModal" tabindex="-1" aria-labelledby="deleteMenuLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 rounded-4 shadow">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-semibold" id="deleteMenuLabel">Hapus Menu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Apakah kamu yakin ingin menghapus menu ini?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
-      </div>
+
+                <!-- ============================
+                     MODAL EDIT MENU
+                ============================= -->
+                <div class="modal fade" id="editMenuModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content border-0 rounded-4">
+
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title fw-semibold">Edit Menu</h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body px-4">
+                                <form id="editMenuForm" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Menu Name</label>
+                                        <input type="text" id="editMenuName" name="menu_name" class="form-control rounded-3" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Category</label>
+                                        <select id="editMenuCategory" name="id_category" class="form-select rounded-3" required>
+                                            @foreach ($categories as $c)
+                                                <option value="{{ $c->id_category }}">{{ $c->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Price</label>
+                                        <input type="number" id="editMenuPrice" name="menu_price" class="form-control rounded-3" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Status</label>
+                                        <select id="editMenuStatus" name="menu_status" class="form-select rounded-3">
+                                            <option value="available">Available</option>
+                                            <option value="Unavailable">Unavailable</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea id="editMenuDescription" name="menu_description" class="form-control rounded-3" rows="3"></textarea>
+                                    </div>
+
+   <!-- IMAGE -->
+<div class="mb-3 text-center">
+    <label class="form-label d-block">Menu Image</label>
+
+    <!-- PREVIEW GAMBAR -->
+    <div class="mb-2 d-flex justify-content-center">
+        <img id="editPreviewImage"
+             src=""
+             class="rounded border"
+             style="width: 180px; height: 180px; object-fit: cover;">
     </div>
-  </div>
+
+    <!-- INPUT FILE -->
+    <input type="file" id="editMenuImage" name="menu_image" class="d-none" accept="image/*">
+
+    <!-- BUTTON GANTI FOTO DI TENGAH -->
+    <button type="button" class="btn btn-secondary btn-sm mt-2" id="btnChangeImage">
+        Ganti Foto
+    </button>
+
+    <small class="text-muted d-block mt-2">
+        Kosongkan jika tidak ingin mengganti gambar.
+    </small>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+                                 <div class="mb-3">
+                                        <label class="form-label">Display Status</label>
+                                        <select id="editDisplayStatus" name="display_status" class="form-select rounded-3">
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-success">Update</button>
+                                    </div>
+
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================
+                     MODAL DETAIL
+                ============================= -->
+                <div class="modal fade" id="menuDetailModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content rounded-4">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold">Menu Details</h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <img id="detailMenuImage" class="img-fluid rounded-3 border"
+                                            style="object-fit: cover; width: 100%; height: 180px;">
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <h4 id="detailMenuName" class="fw-bold"></h4>
+                                        <p id="detailMenuDescription" class="text-muted mt-2"></p>
+                                        <h5 id="detailMenuPrice" class="fw-bold mt-3"></h5>
+
+                                        <div class="mt-4 d-flex gap-2">
+                                            <button class="btn btn-outline-success px-4 py-2 rounded-3 fw-semibold"
+                                                id="btnDetailEdit">
+                                                <i class="bi bi-pencil me-2"></i> Edit
+                                            </button>
+
+                                            <button class="btn btn-outline-danger px-4 py-2 rounded-3 fw-semibold"
+                                                id="btnDetailDelete">
+                                                <i class="bi bi-trash me-2"></i> Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================
+                     MODAL CONFIRM DELETE
+                ============================= -->
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold">Konfirmasi Hapus</h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                Apakah Anda yakin ingin menghapus menu ini?
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button class="btn btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+@endsection
+
+@push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // EDIT MENU
-  const editButtons = document.querySelectorAll('.edit-menu-btn');
-  const editForm = document.getElementById('editMenuForm');
-  const editFotoPreview = document.getElementById('editFotoPreview');
-  const editFotoInput = document.getElementById('editFotoMenu');
-  const editFotoBtn = document.getElementById('editFotoBtn');
+document.addEventListener("DOMContentLoaded", () => {
 
-  editButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.dataset.id;
-      const name = this.dataset.name;
-      const category = this.dataset.category;
-      const price = this.dataset.price;
-      const status = this.dataset.status;
-      const description = this.dataset.description;
-      const image = this.dataset.image;
+    let selectedId = null;
+    let selectedData = {};
 
-      document.getElementById('editNamaMenu').value = name;
-      document.getElementById('editKategoriMenu').value = category;
-      document.getElementById('editHargaMenu').value = price;
-      document.getElementById('editStatusMenu').value = status;
-      document.getElementById('editDeskripsiMenu').value = description;
-      editFotoPreview.src = image ? image : "{{ asset('image/default-food.png') }}";
+    // ============================================
+    // OPEN DETAIL MODAL (KLIK CARD)
+    // ============================================
+    document.querySelectorAll(".menu-card").forEach(card => {
+        card.addEventListener("click", function () {
 
-      editForm.action = `/seller/menus/${id}`;
+            selectedId = this.dataset.id;
+
+            selectedData = {
+                name: this.dataset.name,
+                price: this.dataset.price,
+                description: this.dataset.description,
+                image: this.dataset.image,
+                category: this.dataset.category,
+                status: this.dataset.status,
+                display: this.dataset.display
+            };
+
+            document.getElementById("detailMenuName").textContent = selectedData.name;
+            document.getElementById("detailMenuPrice").textContent = "Rp " + Number(selectedData.price).toLocaleString("id-ID").replace(/\./g, ",");
+            document.getElementById("detailMenuDescription").textContent = selectedData.description;
+            document.getElementById("detailMenuImage").src = selectedData.image;
+
+            new bootstrap.Modal(document.getElementById("menuDetailModal")).show();
+        });
     });
-  });
 
-  editFotoBtn.addEventListener('click', () => editFotoInput.click());
+    // ============================================
+    // EDIT FROM DETAIL MODAL
+    // ============================================
+    document.getElementById("btnDetailEdit").addEventListener("click", () => {
 
-  editFotoInput.addEventListener('change', function() {
-    if (this.files && this.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        editFotoPreview.src = e.target.result;
-      }
-      reader.readAsDataURL(this.files[0]);
+        bootstrap.Modal.getInstance(document.getElementById("menuDetailModal")).hide();
+
+        setTimeout(() => {
+            openEditModal();
+        }, 300);
+    });
+
+    // ============================================
+    // EDIT FROM GRID MENU BUTTON
+    // ============================================
+    document.querySelectorAll(".btnEditCard").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+
+            e.stopPropagation();
+
+            let card = this.closest(".menu-card");
+
+            selectedId = card.dataset.id;
+
+            selectedData = {
+                name: card.dataset.name,
+                price: card.dataset.price,
+                description: card.dataset.description,
+                image: card.dataset.image,
+                category: card.dataset.category,
+                status: card.dataset.status,
+                display: card.dataset.display
+            };
+
+            openEditModal();
+        });
+    });
+
+    // ============================================
+    // OPEN EDIT MODAL FUNCTION
+    // ============================================
+    function openEditModal() {
+
+        document.getElementById("editMenuForm").action = `/seller/menus/${selectedId}`;
+
+        document.getElementById("editMenuName").value = selectedData.name;
+        document.getElementById("editMenuPrice").value = selectedData.price;
+        document.getElementById("editMenuDescription").value = selectedData.description;
+        document.getElementById("editMenuCategory").value = selectedData.category;
+        document.getElementById("editMenuStatus").value = selectedData.status;
+        document.getElementById("editDisplayStatus").value = selectedData.display;
+
+        document.getElementById("editPreviewImage").src = selectedData.image;
+
+        new bootstrap.Modal(document.getElementById("editMenuModal")).show();
     }
-  });
 
-  // DELETE MENU
-  let deleteFormId;
-  const deleteModal = document.getElementById('deleteMenuModal');
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    // ============================================
+    // PREVIEW IMAGE — EDIT MENU
+    // ============================================
+    document.getElementById("btnChangeImage").addEventListener("click", () =>
+        document.getElementById("editMenuImage").click()
+    );
 
-  deleteModal.addEventListener('show.bs.modal', function(event) {
-    const button = event.relatedTarget;
-    deleteFormId = button.getAttribute('data-form-id');
-  });
+    document.getElementById("editMenuImage").addEventListener("change", e => {
+        if (e.target.files[0]) {
+            document.getElementById("editPreviewImage").src =
+                URL.createObjectURL(e.target.files[0]);
+        }
+    });
 
-  confirmDeleteBtn.addEventListener('click', function() {
-    if(deleteFormId) {
-      document.getElementById(deleteFormId).submit();
-    }
-  });
+    // ============================================
+    // DELETE FROM GRID MENU BUTTON
+    // ============================================
+    document.querySelectorAll(".btnDeleteCard").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+
+            e.stopPropagation();
+
+            selectedId = this.dataset.id;
+
+            new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
+        });
+    });
+
+    // ============================================
+    // DELETE FROM DETAIL MODAL
+    // ============================================
+    document.getElementById("btnDetailDelete").addEventListener("click", () => {
+        new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
+    });
+
+    // ============================================
+    // CONFIRM DELETE
+    // ============================================
+    document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+
+        let form = document.createElement("form");
+        form.method = "POST";
+        form.action = `/seller/menus/${selectedId}`;
+
+        form.innerHTML = `
+            @csrf
+            @method('DELETE')
+        `;
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+
+    // ============================================
+    // PREVIEW IMAGE — ADD MENU (INI YG KURANG!)
+    // ============================================
+    document.getElementById("addMenuImage").addEventListener("change", function () {
+
+        let file = this.files[0];
+        if (!file) return;
+
+        let preview = document.getElementById("addImagePreview");
+        let placeholder = document.getElementById("addImagePlaceholder");
+
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove("d-none");
+
+        placeholder.classList.add("d-none");
+    });
+
+     document.getElementById('fotoMenu').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Only image files (JPG, PNG, JPEG) are allowed.');
+                e.target.value = '';
+                return;
+            }
+
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('Image size must be less than 10 MB.');
+                e.target.value = '';
+                return;
+            }
+        });
 });
 </script>
-</body>
-</html>
+@endpush

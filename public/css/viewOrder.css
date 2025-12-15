@@ -1,0 +1,25 @@
+.order-info {
+    border-radius: 20px;
+    background: #fff;
+}
+
+.order-info .badge {
+    padding: 5px 12px;
+    font-size: 12px;
+}
+
+.font {
+    font-family: "Plus Jakarta Sans";
+}
+
+.viewOrder-btn {
+    background: #ffbc33;
+    font-family: "Plus Jakarta Sans";
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 0 20px;
+    height: 45px;
+    font-weight: 600;
+    font-size: 12px;
+}

@@ -5,80 +5,63 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Order;
-use App\Models\Payment;
-use App\Models\Category;
+use App\Models\OrderDetail;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Jumlah menu yang aktif & tersedia
-        $availableDish = Menu::where('menu_active', 1)
-                             ->where('menu_status', 'available')
-                             ->count();
+        // TOTAL MENU
+        $totalMenu = Menu::count();
 
-        // Total order hari ini
-        $totalOrder = Order::whereDate('order_datetime', Carbon::today())->count();
+        // ============================
+        // BEST SELLER (TOP 3 - PAID)
+        // ============================
+        $bestSellers = OrderDetail::select(
+                'order_details.menu_id',
+                DB::raw('SUM(order_details.quantity) as total_qty')
+            )
+            ->join('orders', 'orders.order_id', '=', 'order_details.order_id')
+            ->where('orders.status_bayar', 'PAID')
+            ->groupBy('order_details.menu_id')
+            ->orderByDesc('total_qty')
+            ->with('menu')
+            ->limit(3)
+            ->get();
 
-        // Total penjualan bulan ini (gunakan join agar SQLite enum aman)
-        $totalSalesMonth = Payment::join('orders', 'payments.order_id', '=', 'orders.order_id')
-            ->where('orders.status_order', '=', 'CLOSE')
-            ->where('orders.status_bayar', '=', 'PAID')
-            ->whereMonth('payments.payment_datetime', Carbon::now()->month)
-            ->sum('payments.amount');
+        // ============================
+        // PENDING ORDERS → IN PROGRESS
+        // ============================
+        $pendingOrders = Order::where('status_order', 'OPEN')
+            ->where('status_bayar', 'PAID')
+            ->count();
 
-        // Jumlah customer yang menunggu (order OPEN)
-        $waitingCustomers = Order::where('status_order', '=', 'OPEN')->count();
+        // ============================
+        // WEEKLY SALES CHART
+        // ============================
+        $weekDays = collect();
+        $salesData = collect();
 
-        // Total penjualan per kategori
-        $categorySales = Category::with(['menus.orderDetails.order.payment'])
-            ->get()
-            ->map(function($category) {
-                $total = $category->menus->sum(function($menu) {
-                    return $menu->orderDetails->sum(function($detail) {
-                        return optional($detail->order->payment)->amount ?? 0;
-                    });
-                });
+        for ($i = 6; $i >= 0; $i--) {
+            $day  = Carbon::today()->subDays($i)->format('D');
+            $date = Carbon::today()->subDays($i)->toDateString();
 
-                return [
-                    'name' => $category->name,
-                    'total_sales' => $total,
-                ];
-            });
+            $totalSales = Order::whereDate('created_at', $date)
+                ->where('status_bayar', 'PAID')
+                ->count();
 
-        // 5 order terakhir
-        $recentOrders = Order::with(['meja', 'orderDetails.menu', 'payment'])
-                             ->latest()
-                             ->take(5)
-                             ->get();
-
-        // Penjualan per hari dalam minggu ini (join manual)
-        $salesWeekRaw = Payment::join('orders', 'payments.order_id', '=', 'orders.order_id')
-            ->where('orders.status_order', '=', 'CLOSE')
-            ->where('orders.status_bayar', '=', 'PAID')
-            ->whereBetween('payments.payment_datetime', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-            ->get()
-            ->groupBy(function($payment) {
-                return Carbon::parse($payment->payment_datetime)->format('D'); // Sun, Mon, ...
-            });
-
-        $daysOfWeek = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        $salesChart = [
-            'labels' => $daysOfWeek,
-            'data' => collect($daysOfWeek)->map(fn($day) => 
-                $salesWeekRaw->has($day) ? $salesWeekRaw[$day]->sum('amount') : 0
-            ),
-        ];
+            $weekDays->push($day);
+            $salesData->push($totalSales);
+        }
 
         return view('seller.dashboard', compact(
-            'availableDish',
-            'totalOrder',
-            'totalSalesMonth',
-            'waitingCustomers',
-            'categorySales',
-            'recentOrders',
-            'salesChart'
+            'totalMenu',
+            'bestSellers',
+            'pendingOrders',
+            'weekDays',
+            'salesData'
         ));
     }
 }
