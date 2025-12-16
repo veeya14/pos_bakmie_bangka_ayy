@@ -45,7 +45,7 @@
         <!-- BUTTON VIEW ORDER STATUS -->
         <a href="{{ route('customer.order.status', ['order_id' => $order->order_id]) }}"
             style="background:#FFC548; padding:12px 20px; display:block; width:200px; margin:20px auto; 
-                border-radius:10px; text-align:center; color:#000; font-weight:600; text-decoration:none;">
+                border-radius:10px; text-align:center; color:#fff; font-weight:600; text-decoration:none;">
             View order status
         </a>
 

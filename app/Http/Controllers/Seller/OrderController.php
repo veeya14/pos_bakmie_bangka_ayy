@@ -9,87 +9,74 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * ORDER LIST
-     * Hanya tampilkan:
-     * - IN PROGRESS  => status_order = OPEN  & status_bayar = PAID
-     * - SENT         => status_order = CLOSE & status_bayar = PAID
+     * =========================
+     * ORDER LIST (DAPUR / AKTIF)
+     * =========================
      */
     public function index()
-    {
-        $orders = Order::with(['details.menu', 'payment'])
-            ->where(function ($q) {
-                // IN PROGRESS
-                $q->where('status_order', 'OPEN')
-                  ->where('status_bayar', 'PAID');
-            })
-            ->orWhere(function ($q) {
-                // SENT
-                $q->where('status_order', 'CLOSE')
-                  ->where('status_bayar', 'PAID');
-            })
-            ->orderBy('order_datetime', 'desc')
-            ->get();
+{
+    $orders = Order::with(['details.menu', 'payment'])
+        ->where(function ($q) {
+            // IN PROGRESS
+            $q->where('status_order', 'OPEN')
+              ->where('status_bayar', 'PAID');
+        })
+        ->orWhere(function ($q) {
+            // FINISH
+            $q->where('status_order', 'CLOSE')
+              ->where('status_bayar', 'PAID');
+        })
+        ->orderByDesc('order_datetime')
+        ->get();
 
-        return view('seller.orderList', compact('orders'));
-    }
+    return view('seller.orderList', compact('orders'));
+}
 
-    /**
-     * DETAIL ORDER (kalau nanti kamu mau pakai halaman detail terpisah)
-     */
-    public function show($orderId)
-    {
-        $order = Order::with(['details.menu', 'payment'])
-            ->findOrFail($orderId);
-
-        return view('seller.orderDetail', compact('order'));
-    }
 
     /**
-     * UPDATE STATUS PESANAN DARI SELLER
-     *
-     * Dari UI:
-     * - IN_PROGRESS => OPEN  + PAID  (In Progress)
-     * - SENT        => CLOSE + PAID  (Sent)
+     * =========================
+     * UPDATE STATUS DARI SELLER
+     * =========================
      */
     public function updateStatus(Request $request, $orderId)
-    {
-        $request->validate([
-            'status_ui' => 'required|in:IN_PROGRESS,SENT',
+{
+    $request->validate([
+        'status_ui' => 'required|in:IN_PROGRESS,FINISHED',
+    ]);
+
+    $order = Order::findOrFail($orderId);
+
+    if ($request->status_ui === 'IN_PROGRESS') {
+        $order->update([
+            'status_order' => 'OPEN',
+            'status_bayar' => 'PAID',
         ]);
-
-        $order = Order::findOrFail($orderId);
-
-        if ($request->status_ui === 'IN_PROGRESS') {
-            // Pesanan sedang diproses
-            $order->status_order = 'OPEN';
-            $order->status_bayar = 'PAID';
-        }
-
-        if ($request->status_ui === 'SENT') {
-            // Pesanan sudah dikirim / selesai
-            $order->status_order = 'CLOSE';
-            $order->status_bayar = 'PAID';
-        }
-
-        $order->save();
-
-        return back()->with('success', 'Order status updated.');
     }
+
+    if ($request->status_ui === 'FINISHED') {
+        $order->update([
+            'status_order' => 'CLOSE',
+            'status_bayar' => 'PAID',
+        ]);
+    }
+
+    return back()->with('success', 'Order status updated.');
+}
 
     /**
-     * ORDER HISTORY
-     * Menampilkan semua order yang sudah CLOSE:
-     * - FINISH = CLOSE + PAID
-     * - CANCEL = CLOSE + UNPAID
-     * (status ditentukan di Blade: seller/orderHistory.blade.php)
+     * =========================
+     * ORDER HISTORY (ARSIP)
+     * =========================
      */
-    public function history()
-    {
-        $orders = Order::with(['details.menu', 'payment'])
-            ->where('status_order', 'CLOSE')
-            ->orderBy('order_datetime', 'desc')
-            ->get();
+public function history()
+{
+    $orders = Order::with(['details.menu', 'payment'])
+        ->where('status_order', 'CLOSE') 
+        ->orderByDesc('order_datetime')
+        ->get();
 
-        return view('seller.orderHistory', compact('orders'));
-    }
+    return view('seller.orderHistory', compact('orders'));
+}
+
+
 }

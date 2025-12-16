@@ -106,11 +106,11 @@
                                 </small>
                             </div>
 
-                            {{-- ADD TO CART --}}
-                            <a href="{{ route('customer.menu.detail', $menu->id_menu) }}"
-                                class="btn btn-sm d-flex justify-content-center align-items-center">
-                                <i class="bi bi-plus btn-plus"></i>
-                            </a>
+{{-- ADD TO CART --}}
+<a href="{{ route('customer.menu.detail', $menu->id_menu) }}"
+   class="btn btn-sm d-flex justify-content-center align-items-center">
+    <i class="bi bi-plus btn-plus"></i>
+</a>
 
 
                         </div>

@@ -55,12 +55,14 @@
                 </span>
             </div>
 
-            <div class="orderSent-row">
-                <span class="orderSent-label">Table Number</span>
-                <span class="orderSent-value">
-                    {{ 'ORD-' . str_pad($order->order_id, 3, '0', STR_PAD_LEFT) }}
-                </span>
-            </div>
+<div class="orderSent-row">
+    <span class="orderSent-label">Table Number</span>
+    <span class="orderSent-value">
+        {{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+    </span>
+</div>
+
+
 
             <div class="orderSent-row">
                 <span class="orderSent-label">Payment Method</span>

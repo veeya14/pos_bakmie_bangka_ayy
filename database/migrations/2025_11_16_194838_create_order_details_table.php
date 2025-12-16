@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('quantity')->default(1);
             $table->decimal('subtotal', 10, 2);
             $table->timestamps();
-
+            
             $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
             $table->foreign('menu_id')->references('id_menu')->on('menus')->onDelete('cascade');
         });

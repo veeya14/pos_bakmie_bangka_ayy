@@ -68,7 +68,7 @@
                         <!-- NOTE BUTTON -->
                         <button type="button"
                                 class="note-btn"
-                                onclick="openNotePopup('{{ $item['id'] }}', '{{ $item['note'] ?? '' }}')">
+                                onclick="openNotePopup('{{ $item['menu_id'] }}', '{{ $item['note'] ?? '' }}')">
                             <i class="bi bi-pencil-fill me-1"></i> Note
                         </button>
 
@@ -88,20 +88,21 @@
                             {{-- MINUS --}}
                             <form action="{{ route('customer.cart.update') }}" method="POST">
                                 @csrf
-                                <input type="hidden" name="menu_id" value="{{ $item['id'] }}">
+                                <input type="hidden" name="menu_id" value="{{ $item['menu_id'] }}">
                                 <input type="hidden" name="qty" value="{{ $item['qty'] - 1 }}">
                                 <button class="qty-btn">−</button>
                             </form>
 
                             <span class="qty">{{ $item['qty'] }}</span>
 
-                            {{-- PLUS --}}
-                            <form action="{{ route('customer.cart.update') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="menu_id" value="{{ $item['id'] }}">
-                                <input type="hidden" name="qty" value="{{ $item['qty'] + 1 }}">
-                                <button class="qty-btn">+</button>
-                            </form>
+ {{-- PLUS --}}
+<form action="{{ route('customer.cart.update') }}" method="POST">
+    @csrf
+    <input type="hidden" name="menu_id" value="{{ $item['menu_id'] }}">
+    <input type="hidden" name="qty" value="{{ $item['qty'] + 1 }}">
+    <button class="qty-btn">+</button>
+</form>
+
 
                         </div>
                     </div>

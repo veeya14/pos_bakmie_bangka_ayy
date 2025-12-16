@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('menu_image')->nullable();
             $table->timestamps();
 
-            // Foreign key MySQL only, SQLite ignore
+            
             if (config('database.default') !== 'sqlite') {
                 $table->foreign('id_category')
                       ->references('id_category')

@@ -24,6 +24,8 @@ Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/search-order-view', [CustomerOrderController::class, 'searchOrderView'])
         ->name('searchOrderView');
 
+    Route::get('/menu/meja/{meja}', [CustomerMenuController::class, 'menuByMeja'])
+    ->name('menu.meja');
 
     // MENU LIST
     Route::get('/menu', [CustomerMenuController::class, 'index'])->name('menuCustomer');

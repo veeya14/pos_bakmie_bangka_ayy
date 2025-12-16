@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Meja;
 
 class Order extends Model
 {
@@ -17,6 +18,7 @@ class Order extends Model
     'status_bayar',
     'order_datetime',
     'notes',
+    'meja_id',
 ];
 
     public function orderDetails()
@@ -34,6 +36,9 @@ public function payment()
     return $this->hasOne(\App\Models\Payment::class, 'order_id', 'order_id');
 }
 
-
+public function meja()
+{
+    return $this->belongsTo(Meja::class, 'meja_id', 'meja_id');
+}
 
 }

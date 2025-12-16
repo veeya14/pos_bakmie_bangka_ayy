@@ -25,6 +25,7 @@
                         <th>Date</th>
                         <th>Order ID</th>
                         <th>Customer Name</th>
+                        <th>Table</th>
                         <th>Payment Method</th>
                         <th>Status</th>
                         <th>Total Price</th>
@@ -39,10 +40,14 @@
                         <td>{{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y') }}</td>
 
                         {{-- ORDER ID --}}
-                        <td>{{ $order->order_id }}</td>
+                        <td>{{ 'ORD-' . str_pad($order->order_id, 3, '0', STR_PAD_LEFT) }}</td>
 
                         {{-- CUSTOMER NAME --}}
                         <td>{{ $order->customer_name ?? '-' }}</td>
+
+                        <td>
+                          {{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+                        </td>
 
                         {{-- PAYMENT METHOD --}}
                         <td>{{ $order->payment?->payment_method ?? 'QRIS' }}</td>
@@ -50,12 +55,13 @@
 
                         {{-- STATUS FIXED --}}
                         <td>
-                            @if ($order->status_bayar === 'PAID')
-                                <span class="badge bg-success">Finish</span>
-                            @else
-                                <span class="badge bg-danger">Cancel</span>
-                            @endif
-                        </td>
+                        @if ($order->status_order === 'CLOSE' && $order->status_bayar === 'PAID')
+    <span class="badge bg-success">Finish</span>
+
+@elseif ($order->status_order === 'CLOSE' && $order->status_bayar === 'UNPAID')
+    <span class="badge bg-danger">Cancelled</span>
+@endif
+</td>
 
                         {{-- TOTAL --}}
                         <td>
@@ -90,25 +96,30 @@
         <div class="modal-content border-0 rounded-4 shadow">
 
             <div class="modal-header border-0">
-                <h5 class="modal-title">Order #{{ $order->order_id }}</h5>
+                <h5 class="modal-title"> Order {{ 'ORD-' . str_pad($order->order_id, 3, '0', STR_PAD_LEFT) }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
 
                 <p><strong>Date:</strong>
-                    {{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y H:i') }}
-                </p>
+    {{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y H:i') }}
+</p>
 
-                <p><strong>Customer Name:</strong>
-                    {{ $order->customer_name ?? '-' }}
-                </p>
+<p><strong>Customer Name:</strong>
+    {{ $order->customer_name ?? '-' }}
+</p>
 
-                <p><strong>Payment Method:</strong>
-                     {{ $order->payment?->payment_method ?? 'QRIS' }}
-                </p>
+<p><strong>Table Number:</strong>
+{{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+</p>
 
-                <hr>
+<p><strong>Payment Method:</strong>
+    {{ $order->payment?->payment_method ?? 'QRIS' }}
+</p>
+
+<hr>
+
 
                 <table class="table align-middle">
                     <thead>

@@ -8,42 +8,72 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    /**
+     * =========================
+     * VIEW CART
+     * =========================
+     */
     public function index()
     {
         $cart = session()->get('cart', []);
         $cartCount = collect($cart)->sum('qty');
+
         return view('customer.order', compact('cart', 'cartCount'));
     }
 
-   public function add(Request $request)
+    /**
+     * =========================
+     * ADD TO CART
+     * =========================
+     */
+    public function add(Request $request)
 {
+    $request->validate([
+        'menu_id' => 'required|integer',
+        'qty' => 'nullable|integer|min:1',
+    ]);
+
     $menu = Menu::findOrFail($request->menu_id);
 
     $cart = session()->get('cart', []);
 
-    if (isset($cart[$menu->id_menu])) {
-        $cart[$menu->id_menu]['qty'] += 1;
-    } else {
-        $cart[$menu->id_menu] = [
-            'id' => $menu->id_menu,
-            'name' => $menu->menu_name,
-            'price' => $menu->menu_price,
-            'qty' => 1,
-            'image' => $menu->menu_image,
-        ];
-    }
+    // 🔥 PAKAI PK ASLI
+    $menuId = $menu->id_menu;
+
+    $cart[$menuId] = [
+        'menu_id' => $menu->id_menu, // ← WAJIB ADA
+        'name'    => $menu->menu_name,
+        'price'   => $menu->menu_price,
+        'qty'     => ($cart[$menuId]['qty'] ?? 0) + ($request->qty ?? 1),
+        'image'   => $menu->menu_image,
+        'note'    => $request->note ?? null,
+    ];
 
     session()->put('cart', $cart);
-    return back()->with('success', 'Item added to cart!');
+
+    return back()->with('added', true);
 }
 
 
+    /**
+     * =========================
+     * UPDATE QTY
+     * =========================
+     */
     public function update(Request $request)
     {
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$request->menu_id])) {
-            $cart[$request->menu_id]['qty'] = $request->qty;
+        $menuId = (int) $request->menu_id;
+
+        if (!isset($cart[$menuId])) {
+            return back();
+        }
+
+        if ($request->qty <= 0) {
+            unset($cart[$menuId]);
+        } else {
+            $cart[$menuId]['qty'] = $request->qty;
         }
 
         session()->put('cart', $cart);
@@ -51,6 +81,11 @@ class CartController extends Controller
         return back();
     }
 
+    /**
+     * =========================
+     * REMOVE ITEM
+     * =========================
+     */
     public function remove(Request $request)
     {
         $cart = session()->get('cart', []);
@@ -62,23 +97,33 @@ class CartController extends Controller
         return back()->with('success', 'Item removed');
     }
 
+    /**
+     * =========================
+     * CLEAR CART
+     * =========================
+     */
     public function clear()
     {
         session()->forget('cart');
+
         return back()->with('success', 'Cart cleared!');
     }
 
+    /**
+     * =========================
+     * ADD / UPDATE NOTE
+     * =========================
+     */
     public function note(Request $request)
-{
-    $cart = session()->get('cart', []);
+    {
+        $cart = session()->get('cart', []);
 
-    if (isset($cart[$request->menu_id])) {
-        $cart[$request->menu_id]['note'] = $request->note;
+        if (isset($cart[$request->menu_id])) {
+            $cart[$request->menu_id]['note'] = $request->note;
+        }
+
+        session()->put('cart', $cart);
+
+        return back()->with('success', 'Note saved!');
     }
-
-    session()->put('cart', $cart);
-
-    return back()->with('success', 'Note saved!');
-}
-
 }

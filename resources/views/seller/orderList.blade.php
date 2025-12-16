@@ -41,7 +41,7 @@
                             <td>{{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y') }}</td>
 
                             {{-- ORDER ID --}}
-                            <td>{{ $order->order_id }}</td>
+                            <td>{{ 'ORD-' . str_pad($order->order_id, 3, '0', STR_PAD_LEFT) }}</td>
 
                             {{-- CUSTOMER --}}
                             <td>{{ $order->customer_name }}</td>
@@ -108,7 +108,7 @@
                                                       method="POST">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <input type="hidden" name="status_ui" value="SENT">
+                                                    <input type="hidden" name="status_ui" value="FINISHED">
                                                     <button type="submit" class="dropdown-item">
                                                         Finish
                                                     </button>
@@ -139,16 +139,29 @@
         <div class="modal-content border-0 rounded-4 shadow">
 
             <div class="modal-header border-0">
-                <h5 class="modal-title">Order #{{ $order->order_id }}</h5>
+                <h5 class="modal-title">Order {{ 'ORD-' . str_pad($order->order_id, 3, '0', STR_PAD_LEFT) }}</h5>
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
 
-                <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y') }}</p>
-                <p><strong>Name:</strong> {{ $order->customer_name }}</p>
-                <p><strong>Payment:</strong>  {{ $order->payment?->payment_method ?? 'QRIS' }}</p>
-                <hr>
+                <p><strong>Date:</strong>
+    {{ \Carbon\Carbon::parse($order->order_datetime)->format('d-m-Y') }}
+</p>
+
+<p><strong>Name:</strong>
+    {{ $order->customer_name }}
+</p>
+
+<p><strong>Table Number:</strong>
+{{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+</p>
+
+<p><strong>Payment:</strong>
+    {{ $order->payment?->payment_method ?? 'QRIS' }}
+</p>
+
+<hr>
 
                 <table class="table align-middle">
                     <thead>

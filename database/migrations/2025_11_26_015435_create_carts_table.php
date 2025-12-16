@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id('cart_id');
-            $table->unsignedBigInteger('menu_id');   // menu yg dimasukkan ke cart
-            $table->integer('quantity')->default(1); // jumlah
-            $table->decimal('subtotal', 10, 2);      // harga x qty
+            $table->unsignedBigInteger('menu_id');  
+            $table->integer('quantity')->default(1);
+            $table->decimal('subtotal', 10, 2);      
             $table->timestamps();
 
         });
