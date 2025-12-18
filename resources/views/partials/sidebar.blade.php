@@ -8,6 +8,13 @@
             </a>
         </li>
         <li class="nav-item mb-2">
+            <a class="nav-link {{ request()->is('seller/profile*') ? 'active' : '' }}"
+               href="{{ route('seller.profile') }}">
+                 Profile
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
             <a class="nav-link {{ request()->is('seller/menus*') ? 'active' : '' }}" href="{{ route('seller.menus.index') }}">
                 Menu
             </a>

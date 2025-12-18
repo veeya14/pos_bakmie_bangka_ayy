@@ -13,34 +13,30 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // TOTAL MENU
+       
         $totalMenu = Menu::count();
 
-        // ============================
-        // BEST SELLER (TOP 3 - PAID)
-        // ============================
         $bestSellers = OrderDetail::select(
-                'order_details.menu_id',
-                DB::raw('SUM(order_details.quantity) as total_qty')
-            )
-            ->join('orders', 'orders.order_id', '=', 'order_details.order_id')
-            ->where('orders.status_bayar', 'PAID')
-            ->groupBy('order_details.menu_id')
-            ->orderByDesc('total_qty')
-            ->with('menu')
-            ->limit(3)
-            ->get();
+        'order_details.menu_id',
+        DB::raw('SUM(order_details.quantity) as total_qty')
+    )
+    ->join('orders', 'orders.order_id', '=', 'order_details.order_id')
+    ->where('orders.status_bayar', 'PAID')
+    ->whereBetween('orders.created_at', [
+        Carbon::now()->subMonth(),
+        Carbon::now()
+    ])
+    ->groupBy('order_details.menu_id')
+    ->orderByDesc('total_qty')
+    ->with('menu')
+    ->limit(3)
+    ->get();
 
-        // ============================
-        // PENDING ORDERS → IN PROGRESS
-        // ============================
+
         $pendingOrders = Order::where('status_order', 'OPEN')
             ->where('status_bayar', 'PAID')
             ->count();
 
-        // ============================
-        // WEEKLY SALES CHART
-        // ============================
         $weekDays = collect();
         $salesData = collect();
 

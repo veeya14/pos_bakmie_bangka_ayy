@@ -10,7 +10,6 @@
 
 
     <div class="container-fluid">
-
  {{-- Top Stats (STATIC VERSION) --}}
 <div class="row g-3 mb-4 mt-3">
 

@@ -1368,32 +1368,66 @@ ordersent.css: .orderSent-wrapper {
     border-radius: 10px;
 }
 
+/* =========================
+   CANCEL ORDER — FINAL FIX
+   ========================= */
+
+.orderSent-cancelBox {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    height: 48px;
+    margin: 20px auto;
+    border-radius: 14px;
+    background: #FADCDC; /* pink muda */
+    overflow: hidden;
+}
+
+/* progress merah tua */
 .orderSent-cancelProgress {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
-    width: 0%; /* JS akan isi 0 → 100 */
-    background: #ff3b30;
-    opacity: 0.25;
-    border-radius: 10px;
-    z-index: 1; /* DI BAWAH TEXT */
+    width: 0%; /* diisi JS */
+    background: #B3261E;
+    border-radius: 14px 0 0 14px; /* KUNCI: kiri bulat, kanan flat */
+    z-index: 1;
 }
 
+/* tombol */
 .orderSent-cancelBtn {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%; /* IKUTI wrapper */
-    height: 100%;
-    border-radius: 10px;
-    border: 1px solid #ff3b30;
-    background: rgba(255, 194, 191, 0.5);
+    inset: 0;
+    background: transparent;   /* ⬅️ PENTING */
+    border: none;              /* ⬅️ HILANGKAN GARIS */
+    color: #FFFFFF;
     font-size: 15px;
     font-weight: 600;
-    color: #ff3b30;
-    z-index: 2; /* DI ATAS progress */
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: auto;
 }
+
+
+/* =========================
+   CANCEL ORDER — FIXED
+========================= */
+.orderSent-cancelBox {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    height: 48px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #FADCDC; /* pink muda */
+}
+
 
 payent.css: .qris-page {
     background-color: #f8f8f8;
@@ -1785,5 +1819,320 @@ body.paySuccess-body {
     border: none;
     outline: none;
     font-size: 14px;
+}
+
+.button-edit {
+  background-color: var(--main-yellow);
+   border-radius: 12px;
+   color: #FFF;
+   width : 90px;
+height: 30px;
+ border: none;
+  outline: none;
+font-family: "Plus Jakarta Sans";
+font-size: 10px;
+align-items: center;
+}
+
+.badge-best-seller {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #FFBC33;     
+    color: #fff;           
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.15);
+    z-index: 5;
+}
+
+.badge-best-seller .thumb-icon {
+    color: #fff; 
+}
+
+/* CARD */
+.menu-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    height: 100%;
+}
+
+/* IMAGE */
+.menu-img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+/* INFO */
+.menu-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.menu-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.menu-price {
+    font-size: 12px;
+    color: #777;
+}
+
+/* BEST SELLER BADGE */
+.badge-best-seller {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #FFBC33;
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+/* BUNGKUS SEARCH + ORDER ID */
+.top {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* SEARCH */
+.search-bar {
+    flex: 1;
+    max-width: 100%;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 999px;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+}
+
+/* ORDER ID */
+.btn-order-id {
+    background: #FFBC33;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+
+    /* INI KUNCI UTAMANYA */
+    flex-shrink: 0;
+    max-width: 40%;
+}
+
+@media (max-width: 480px) {
+    .btn-order-id {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
+
+.btn-plus-circle {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #FF8A00 !important;
+    border-radius: 8px;
+
+    background: transparent !important;
+    color: #FF8A00 !important;
+
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+
+    text-decoration: none;
+}
+
+
+.menu-card .btn-plus-circle {
+    margin-bottom: 4px;
+    margin-right: 2px;
+}
+
+/* ============================
+   FIX ORDER ITEM LAYOUT (FINAL)
+   ============================ */
+
+/* Paksa item jadi horizontal */
+.order-summary .menu-info {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+}
+
+/* Kiri: teks */
+.order-summary .menu-left {
+    flex: 1 !important;
+    text-align: left !important;
+}
+
+/* Kanan: gambar + qty */
+.order-summary .menu-right {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+/* Gambar kecil kanan */
+.order-summary .menu-img-wrapper {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 12px !important;
+    background: #fff2d9 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.order-summary .menu-img {
+    width: 44px !important;
+    height: 44px !important;
+    object-fit: contain !important;
+}
+
+/* Qty tepat di bawah gambar */
+.order-summary .menu-qty {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 4px !important;
+}
+
+/* Tombol qty */
+.order-summary .qty-btn {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    border: 1px solid #ddd !important;
+    background: #fff !important;
+    color: #f7b42c !important;
+    font-size: 14px !important;
+}
+
+/* Angka qty */
+.order-summary .qty {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+/* === CUSTOMER NAME INPUT (DEFAULT NORMAL) === */
+.customer-input {
+    border: 2px solid transparent;   /* awalnya tidak kuning */
+    background: #fafafa;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+/* === SAAT DI KLIK / FOCUS BARU KUNING === */
+.customer-input:focus {
+    outline: none;
+    border-color: #FFBC33;            /* kuning */
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(255, 188, 51, 0.25);
+}
+
+/* ===============================
+   FIX BACK BUTTON (FINAL)
+=============================== */
+.back-btn {
+    all: unset;                 /* ⬅️ RESET TOTAL */
+    cursor: pointer;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #232323;
+
+    display: flex;
+    align-items: center;
+
+    line-height: 1;             /* ⬅️ HILANGKAN GARIS ANEH */
+}
+
+/* khusus kalau dia <a> */
+.back-btn:link,
+.back-btn:visited,
+.back-btn:hover,
+.back-btn:active {
+    text-decoration: none !important;
+    color: #232323;
+}
+
+/* ===============================
+   BACK BUTTON — FINAL SESUAI FRONTEND
+=============================== */
+.back-btn {
+    all: unset;
+    cursor: pointer;
+
+    width: 36px;
+    height: 36px;
+
+    border: 1px solid #d9d9d9;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffffff;
+    color: #232323;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+
+    line-height: 1;
+}
+
+/* pastikan link ga berubah */
+.back-btn:link,
+.back-btn:visited,
+.back-btn:hover,
+.back-btn:active {
+    text-decoration: none !important;
+    color: #232323;
+}
+
+/* ===============================
+   ORDER STATUS TITLE (TOP TEXT)
+=============================== */
+.orderSent-title {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 18px;        /* ⬅️ ini yang bikin lebih kecil */
+    font-weight: 700;
+    color: #232323;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 12px;
 }
 

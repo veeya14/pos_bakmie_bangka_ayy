@@ -7,14 +7,37 @@
 <div class="container-fluid px-4">
 
     {{-- Filter --}}
-    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-        <input type="text" class="form-control w-auto shadow-sm" placeholder="Search Order ID" />
-        <select class="form-select w-auto shadow-sm">
-            <option value="">All Status</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Finish">Finish</option>
-        </select>
-    </div>
+ <form method="GET"
+      action="{{ route('seller.orders.index') }}"
+      class="d-flex flex-wrap align-items-center gap-3 mb-4">
+
+    <input type="text"
+           name="search"
+           class="form-control shadow-sm"
+           style="width: 220px"
+           placeholder="Search Order ID"
+           value="{{ request('search') }}">
+
+    <select name="status"
+            class="form-select shadow-sm"
+            style="width: 180px"
+            onchange="this.form.submit()">
+
+        <option value="">All Status</option>
+
+        <option value="IN_PROGRESS"
+            {{ request('status') === 'IN_PROGRESS' ? 'selected' : '' }}>
+            In Progress
+        </option>
+
+        <option value="FINISHED"
+            {{ request('status') === 'FINISHED' ? 'selected' : '' }}>
+            Finish
+        </option>
+
+    </select>
+
+</form>
 
     {{-- TABLE --}}
     <div class="card shadow-sm border-0 rounded-4">
@@ -80,46 +103,60 @@
                                         Detail
                                     </button>
 
-                                    {{-- UPDATE STATUS --}}
-                                    <div class="dropdown order-status-dropdown">
-                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
-                                                type="button"
-                                                data-bs-toggle="dropdown">
-                                            Update Status
-                                        </button>
+{{-- UPDATE STATUS --}}
+{{-- UPDATE STATUS --}}
+<div class="dropdown order-status-dropdown">
+    <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown">
+        Update Status
+    </button>
 
-                                        <ul class="dropdown-menu status-menu">
-                                            {{-- IN PROGRESS --}}
-                                            <li>
-                                                <form action="{{ route('seller.orders.updateStatus', $order->order_id) }}"
-                                                      method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input type="hidden" name="status_ui" value="IN_PROGRESS">
-                                                    <button type="submit" class="dropdown-item">
-                                                        In Progress
-                                                    </button>
-                                                </form>
-                                            </li>
+    <ul class="dropdown-menu status-menu">
 
-                                            {{-- SENT --}}
-                                            <li>
-                                                <form action="{{ route('seller.orders.updateStatus', $order->order_id) }}"
-                                                      method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input type="hidden" name="status_ui" value="FINISHED">
-                                                    <button type="submit" class="dropdown-item">
-                                                        Finish
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
+        {{-- IN PROGRESS --}}
+        <li>
+            <form action="{{ route('seller.orders.updateStatus', $order->order_id) }}"
+                  method="POST">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="status_ui" value="IN_PROGRESS">
+                <button type="submit" class="dropdown-item">
+                    In Progress
+                </button>
+            </form>
+        </li>
+
+        {{-- FINISH --}}
+        <li>
+            <form action="{{ route('seller.orders.updateStatus', $order->order_id) }}"
+                  method="POST">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="status_ui" value="FINISHED">
+                <button type="submit" class="dropdown-item">
+                    Finish
+                </button>
+            </form>
+        </li>
+
+     {{-- CANCEL --}}
+<li>
+    <button type="button"
+            class="dropdown-item text-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#cancelOrderModal"
+            onclick="setCancelOrder({{ $order->order_id }})">
+        Cancel
+    </button>
+</li>
+    </ul>
+</div>
+
+
 
                                 </div>
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -154,7 +191,7 @@
 </p>
 
 <p><strong>Table Number:</strong>
-{{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+{{ 'MEJA-' . str_pad($order->meja_number, 2, '0', STR_PAD_LEFT) }}
 </p>
 
 <p><strong>Payment:</strong>
@@ -196,6 +233,49 @@
 </div>
 @endforeach
 
+<!-- =========================
+     MODAL CANCEL ORDER
+========================= -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-semibold text-danger">
+                    Batalkan Pesanan
+                </h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="POST" id="cancelOrderForm">
+                @csrf
+                @method('PATCH')
+
+                <div class="modal-body px-4">
+                    <p class="mb-3">
+                        Apakah Anda yakin ingin <strong>membatalkan pesanan ini</strong>?
+                    </p>
+                    <input type="hidden" name="status_ui" value="CANCEL">
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-danger">
+                        Ya, Batalkan
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 
 {{-- FIX DROPDOWN NOT CLICKABLE & WHITE BACKGROUND --}}
 <style>
@@ -218,5 +298,12 @@
         max-width: 280px;
     }
 </style>
+
+<script>
+    function setCancelOrder(orderId) {
+        const form = document.getElementById('cancelOrderForm');
+        form.action = `/seller/orders/${orderId}/status`;
+    }
+</script>
 
 @endsection

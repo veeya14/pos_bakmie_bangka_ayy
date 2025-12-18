@@ -3,11 +3,10 @@
 @section('title', 'Menu')
 
 @section('content')
-
                 {{-- PAGE HEADER --}}
                 @include('partials.page-header', [
-        'title' => 'Menu',
-        'button' => '
+                        'title' => 'Menu',
+                        'button' => '
                         <button class="btn text-white d-flex align-items-center gap-2 px-3 py-2 me-3"
                             style="background-color: #FFBC33; border: none; border-radius: 8px;"
                             data-bs-toggle="modal"
@@ -15,7 +14,7 @@
                             <i class="bi bi-plus-lg"></i><span>Add Menu</span>
                         </button>
                     ',
-    ])
+                ])
 
                 <!-- Kategori -->
                 <div class="category-scroll mb-3">
@@ -30,27 +29,35 @@
                 @endforeach
                 </div>
 
+                
+
 <!-- GRID MENU -->
 <div class="row g-4">
 @foreach ($menu as $m)
     <div class="col-6 col-md-3">
 
         <!-- Card Menu -->
-        <div class="card border-0 shadow-sm rounded-4 menu-card h-100"
-            data-id="{{ $m->id_menu }}"
-            data-name="{{ $m->menu_name }}"
-            data-price="{{ $m->menu_price }}"
-            data-description="{{ $m->menu_description }}"
-            data-image="{{ asset($m->menu_image) }}"
-            data-category="{{ $m->id_category }}"
-            data-status="{{ $m->menu_status }}"
-            data-display="{{ $m->display_status }}"
-            style="cursor:pointer;">
+        <div class="card border-0 shadow-sm rounded-4 menu-card h-100 position-relative"
+     data-id="{{ $m->id_menu }}"
+     data-name="{{ $m->menu_name }}"
+     data-price="{{ $m->menu_price }}"
+     data-description="{{ $m->menu_description }}"
+     data-image="{{ asset($m->menu_image) }}"
+     data-category="{{ $m->id_category }}"
+     data-status="{{ $m->menu_status }}"
+     data-display="{{ $m->display_status }}"
+     style="cursor:pointer;">
 
             <img src="{{ asset($m->menu_image) }}" 
                  class="card-img-top mx-auto mt-3 img-fluid">
 
             <div class="card-body">
+                @if (in_array($m->id_menu, $bestSellerIds))
+                    <span class="badge-best-seller">
+                         👍 Best Seller
+                    </span>
+                @endif
+
                 <h6 class="fw-semibold mb-1">{{ $m->menu_name }}</h6>
 
                 <div class="d-flex justify-content-between align-items-center">
@@ -113,12 +120,20 @@
                     <!-- CATEGORY -->
                     <div class="mb-3">
                         <label class="form-label">Menu Category</label>
-                        <select name="id_category" class="form-select rounded-3" required>
-                            <option disabled selected>Choose Menu Category</option>
-                            @foreach ($categories as $c)
-                                <option value="{{ $c->id_category }}">{{ $c->name }}</option>
-                            @endforeach
-                        </select>
+                        <select name="id_category"
+        id="menuCategorySelect"
+        class="form-select rounded-3"
+        required>
+    <option value="" selected disabled>Choose Menu Category</option>
+
+    @foreach ($categories as $c)
+        <option value="{{ $c->id_category }}">{{ $c->name }}</option>
+    @endforeach
+
+    <option value="__add_category__">+ Add Category</option>
+</select>
+
+
                     </div>
 
                     <!-- PRICE -->
@@ -133,7 +148,7 @@
                         <select name="menu_status" class="form-select rounded-3" required>
                             <option disabled selected>Choose Menu Status</option>
                             <option value="available">Available</option>
-                            <option value="Unavailable">Unavailable</option>
+                            <option value="unavailable">Unavailable</option>
                         </select>
                     </div>
 
@@ -232,7 +247,7 @@
                                         <label class="form-label">Status</label>
                                         <select id="editMenuStatus" name="menu_status" class="form-select rounded-3">
                                             <option value="available">Available</option>
-                                            <option value="Unavailable">Unavailable</option>
+                                            <option value="unavailable">Unavailable</option>
                                         </select>
                                     </div>
 
@@ -265,7 +280,6 @@
         Kosongkan jika tidak ingin mengganti gambar.
     </small>
 </div>
-
 
                                  <div class="mb-3">
                                         <label class="form-label">Display Status</label>
@@ -357,6 +371,47 @@
                     </div>
                 </div>
 
+                <!-- ============================
+     MODAL ADD CATEGORY
+============================= -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-semibold">Add Category</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body px-4">
+                <form id="addCategoryForm"
+                      action="{{ route('seller.categories.store') }}"
+                      method="POST">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text"
+                               name="name"
+                               class="form-control rounded-3"
+                               placeholder="Ex: Bakmie, Minuman"
+                               required>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-success px-4">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -366,12 +421,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedId = null;
     let selectedData = {};
 
-    // ============================================
-    // OPEN DETAIL MODAL (KLIK CARD)
-    // ============================================
+    /* =========================
+       DETAIL MENU
+    ========================== */
     document.querySelectorAll(".menu-card").forEach(card => {
         card.addEventListener("click", function () {
-
             selectedId = this.dataset.id;
 
             selectedData = {
@@ -385,38 +439,43 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             document.getElementById("detailMenuName").textContent = selectedData.name;
-            document.getElementById("detailMenuPrice").textContent = "Rp " + Number(selectedData.price).toLocaleString("id-ID").replace(/\./g, ",");
+            document.getElementById("detailMenuPrice").textContent =
+                "Rp " + Number(selectedData.price).toLocaleString("id-ID");
             document.getElementById("detailMenuDescription").textContent = selectedData.description;
             document.getElementById("detailMenuImage").src = selectedData.image;
 
-            new bootstrap.Modal(document.getElementById("menuDetailModal")).show();
+            new bootstrap.Modal(
+                document.getElementById("menuDetailModal")
+            ).show();
         });
     });
 
-    // ============================================
-    // EDIT FROM DETAIL MODAL
-    // ============================================
-    document.getElementById("btnDetailEdit").addEventListener("click", () => {
+    /* =========================
+       EDIT MENU
+    ========================== */
+    function openEditModal() {
+        const form = document.getElementById("editMenuForm");
+        form.action = `/seller/menus/${selectedId}`;
 
-        bootstrap.Modal.getInstance(document.getElementById("menuDetailModal")).hide();
+        document.getElementById("editMenuName").value = selectedData.name;
+        document.getElementById("editMenuPrice").value = selectedData.price;
+        document.getElementById("editMenuDescription").value = selectedData.description;
+        document.getElementById("editMenuCategory").value = selectedData.category;
+        document.getElementById("editMenuStatus").value = selectedData.status;
+        document.getElementById("editDisplayStatus").value = selectedData.display;
+        document.getElementById("editPreviewImage").src = selectedData.image;
 
-        setTimeout(() => {
-            openEditModal();
-        }, 300);
-    });
+        new bootstrap.Modal(
+            document.getElementById("editMenuModal")
+        ).show();
+    }
 
-    // ============================================
-    // EDIT FROM GRID MENU BUTTON
-    // ============================================
     document.querySelectorAll(".btnEditCard").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-
+        btn.addEventListener("click", e => {
             e.stopPropagation();
-
-            let card = this.closest(".menu-card");
+            const card = btn.closest(".menu-card");
 
             selectedId = card.dataset.id;
-
             selectedData = {
                 name: card.dataset.name,
                 price: card.dataset.price,
@@ -431,113 +490,96 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ============================================
-    // OPEN EDIT MODAL FUNCTION
-    // ============================================
-    function openEditModal() {
+    /* =========================
+       ADD CATEGORY FROM SELECT
+    ========================== */
+   const categorySelect = document.getElementById('menuCategorySelect');
 
-        document.getElementById("editMenuForm").action = `/seller/menus/${selectedId}`;
+if (categorySelect) {
+    categorySelect.addEventListener('change', function () {
+        if (this.value === '__add_category__') {
+            this.value = '';
 
-        document.getElementById("editMenuName").value = selectedData.name;
-        document.getElementById("editMenuPrice").value = selectedData.price;
-        document.getElementById("editMenuDescription").value = selectedData.description;
-        document.getElementById("editMenuCategory").value = selectedData.category;
-        document.getElementById("editMenuStatus").value = selectedData.status;
-        document.getElementById("editDisplayStatus").value = selectedData.display;
+            const addMenuModalEl = document.getElementById('addMenuModal');
+            const addMenuModal = bootstrap.Modal.getInstance(addMenuModalEl);
 
-        document.getElementById("editPreviewImage").src = selectedData.image;
+            if (addMenuModal) {
+                addMenuModal.hide();
+            }
 
-        new bootstrap.Modal(document.getElementById("editMenuModal")).show();
-    }
-
-    // ============================================
-    // PREVIEW IMAGE — EDIT MENU
-    // ============================================
-    document.getElementById("btnChangeImage").addEventListener("click", () =>
-        document.getElementById("editMenuImage").click()
-    );
-
-    document.getElementById("editMenuImage").addEventListener("change", e => {
-        if (e.target.files[0]) {
-            document.getElementById("editPreviewImage").src =
-                URL.createObjectURL(e.target.files[0]);
+            setTimeout(() => {
+                new bootstrap.Modal(
+                    document.getElementById('addCategoryModal')
+                ).show();
+            }, 300);
         }
     });
+}
 
-    // ============================================
-    // DELETE FROM GRID MENU BUTTON
-    // ============================================
-    document.querySelectorAll(".btnDeleteCard").forEach(btn => {
-        btn.addEventListener("click", function (e) {
+const btnDetailEdit = document.getElementById('btnDetailEdit');
 
-            e.stopPropagation();
+if (btnDetailEdit) {
+    btnDetailEdit.addEventListener('click', () => {
 
-            selectedId = this.dataset.id;
+        // tutup modal detail
+        const detailModal = bootstrap.Modal.getInstance(
+            document.getElementById('menuDetailModal')
+        );
+        detailModal.hide();
 
-            new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
-        });
+        // buka modal edit setelah modal detail tertutup
+        setTimeout(() => {
+            openEditModal();
+        }, 300);
     });
+}
 
-    // ============================================
-    // DELETE FROM DETAIL MODAL
-    // ============================================
-    document.getElementById("btnDetailDelete").addEventListener("click", () => {
-        new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
+// ===============================
+// DELETE MENU (GRID & DETAIL)
+// ===============================
+let deleteMenuId = null;
+
+// klik delete di card
+document.querySelectorAll('.btnDeleteCard').forEach(btn => {
+    btn.addEventListener('click', e => {
+        e.stopPropagation();
+        deleteMenuId = btn.dataset.id;
+
+        new bootstrap.Modal(
+            document.getElementById('confirmDeleteModal')
+        ).show();
     });
+});
 
-    // ============================================
-    // CONFIRM DELETE
-    // ============================================
-    document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+// klik delete di menu detail
+const btnDetailDelete = document.getElementById('btnDetailDelete');
+if (btnDetailDelete) {
+    btnDetailDelete.addEventListener('click', () => {
+        deleteMenuId = selectedId;
 
-        let form = document.createElement("form");
-        form.method = "POST";
-        form.action = `/seller/menus/${selectedId}`;
-
-        form.innerHTML = `
-            @csrf
-            @method('DELETE')
-        `;
-
-        document.body.appendChild(form);
-        form.submit();
+        new bootstrap.Modal(
+            document.getElementById('confirmDeleteModal')
+        ).show();
     });
+}
 
-    // ============================================
-    // PREVIEW IMAGE — ADD MENU (INI YG KURANG!)
-    // ============================================
-    document.getElementById("addMenuImage").addEventListener("change", function () {
+// confirm delete
+document.getElementById('confirmDeleteBtn')?.addEventListener('click', () => {
+    if (!deleteMenuId) return;
 
-        let file = this.files[0];
-        if (!file) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/seller/menus/${deleteMenuId}`;
 
-        let preview = document.getElementById("addImagePreview");
-        let placeholder = document.getElementById("addImagePlaceholder");
+    form.innerHTML = `
+        @csrf
+        @method('DELETE')
+    `;
 
-        preview.src = URL.createObjectURL(file);
-        preview.classList.remove("d-none");
+    document.body.appendChild(form);
+    form.submit();
+});
 
-        placeholder.classList.add("d-none");
-    });
-
-     document.getElementById('fotoMenu').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            if (!validTypes.includes(file.type)) {
-                alert('Only image files (JPG, PNG, JPEG) are allowed.');
-                e.target.value = '';
-                return;
-            }
-
-            const maxSize = 10 * 1024 * 1024;
-            if (file.size > maxSize) {
-                alert('Image size must be less than 10 MB.');
-                e.target.value = '';
-                return;
-            }
-        });
 });
 </script>
 @endpush

@@ -8,24 +8,43 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    /**
-     * =========================
-     * ORDER LIST (DAPUR / AKTIF)
-     * =========================
-     */
-    public function index()
+public function index(Request $request)
 {
-    $orders = Order::with(['details.menu', 'payment'])
-        ->where(function ($q) {
-            // IN PROGRESS
-            $q->where('status_order', 'OPEN')
+    $query = Order::with(['details.menu', 'payment']);
+
+    // =========================
+    // FILTER STATUS
+    // =========================
+    if ($request->status === 'IN_PROGRESS') {
+        $query->where('status_order', 'OPEN')
               ->where('status_bayar', 'PAID');
-        })
-        ->orWhere(function ($q) {
-            // FINISH
-            $q->where('status_order', 'CLOSE')
+
+    } elseif ($request->status === 'FINISHED') {
+        $query->where('status_order', 'CLOSE')
               ->where('status_bayar', 'PAID');
-        })
+
+    } else {
+        // DEFAULT (ALL STATUS)
+        $query->where(function ($q) {
+            $q->where(function ($q) {
+                $q->where('status_order', 'OPEN')
+                  ->where('status_bayar', 'PAID');
+            })
+            ->orWhere(function ($q) {
+                $q->where('status_order', 'CLOSE')
+                  ->where('status_bayar', 'PAID');
+            });
+        });
+    }
+
+    // =========================
+    // SEARCH ORDER ID
+    // =========================
+    if ($request->search) {
+        $query->where('order_id', 'like', '%' . $request->search . '%');
+    }
+
+    $orders = $query
         ->orderByDesc('order_datetime')
         ->get();
 
@@ -33,34 +52,52 @@ class OrderController extends Controller
 }
 
 
+
     /**
      * =========================
      * UPDATE STATUS DARI SELLER
      * =========================
      */
-    public function updateStatus(Request $request, $orderId)
+   public function updateStatus(Request $request, $orderId)
 {
     $request->validate([
-        'status_ui' => 'required|in:IN_PROGRESS,FINISHED',
+        'status_ui' => 'required|in:IN_PROGRESS,FINISHED,CANCEL',
     ]);
 
     $order = Order::findOrFail($orderId);
+    if ($order->status_order === 'CLOSE') {
+    return back()->with('error', 'Order sudah final dan tidak bisa diubah.');
+}
 
-    if ($request->status_ui === 'IN_PROGRESS') {
-        $order->update([
-            'status_order' => 'OPEN',
-            'status_bayar' => 'PAID',
-        ]);
+
+    switch ($request->status_ui) {
+        case 'IN_PROGRESS':
+            $order->update([
+                'status_order' => 'OPEN',
+                'status_bayar' => 'PAID',
+            ]);
+            break;
+
+        case 'FINISHED':
+            $order->update([
+                'status_order' => 'CLOSE',
+                'status_bayar' => 'PAID',
+            ]);
+            break;
+
+case 'CANCEL':
+    $order->update([
+        'status_order' => 'CLOSE',
+        'status_bayar' => 'UNPAID',
+    ]);
+    break;
+
+
     }
 
-    if ($request->status_ui === 'FINISHED') {
-        $order->update([
-            'status_order' => 'CLOSE',
-            'status_bayar' => 'PAID',
-        ]);
-    }
-
-    return back()->with('success', 'Order status updated.');
+    return redirect()
+        ->route('seller.orders.index')
+        ->with('success', 'Order status updated.');
 }
 
     /**
@@ -68,15 +105,30 @@ class OrderController extends Controller
      * ORDER HISTORY (ARSIP)
      * =========================
      */
-public function history()
+public function history(Request $request)
 {
-    $orders = Order::with(['details.menu', 'payment'])
-        ->where('status_order', 'CLOSE') 
+    $query = Order::with(['details.menu', 'payment'])
+        ->where('status_order', 'CLOSE');
+
+    // TAMBAHAN FILTER STATUS
+    if ($request->status === 'FINISH') {
+        $query->where('status_bayar', 'PAID');
+    }
+
+    if ($request->status === 'CANCEL') {
+        $query->where('status_bayar', 'UNPAID');
+    }
+
+    // (opsional) SEARCH ORDER ID
+    if ($request->search) {
+        $query->where('order_id', 'like', '%' . $request->search . '%');
+    }
+
+    $orders = $query
         ->orderByDesc('order_datetime')
         ->get();
 
     return view('seller.orderHistory', compact('orders'));
 }
-
 
 }

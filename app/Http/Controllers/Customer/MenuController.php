@@ -7,17 +7,16 @@ use App\Models\Menu;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Meja;
+use App\Models\OrderDetail;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 
 class MenuController extends Controller
 {
-    /**
-     * =========================
-     * MENU LIST
-     * =========================
-     */
+
     public function index(Request $request)
 {
-    // SESSION INIT (HANYA SEKALI)
     if (!session()->has('entered_restaurant')) {
         session()->invalidate();
         session()->regenerate(true);
@@ -31,7 +30,7 @@ class MenuController extends Controller
     }
 
     $selectedCategory = $request->category ?? 'Menu Paket';
-
+    
     $categories = Category::all();
 
     $category = Category::where('name', $selectedCategory)->first();
@@ -44,12 +43,29 @@ class MenuController extends Controller
         ->where('menu_status', 'available')
         ->get();
 
-    return view('customer.menuCustomer', compact(
-        'categories',
-        'menus',
-        'selectedCategory'
-    ));
+    $oneMonthAgo = Carbon::now()->subMonth();
+
+$bestSellerIds = OrderDetail::select(
+        'order_details.menu_id',
+        DB::raw('SUM(order_details.quantity) as total_qty')
+    )
+    ->join('orders', 'orders.order_id', '=', 'order_details.order_id')
+    ->where('orders.status_bayar', 'PAID')
+    ->where('orders.created_at', '>=', $oneMonthAgo)
+    ->groupBy('order_details.menu_id')
+    ->orderByDesc('total_qty')
+    ->limit(5) 
+    ->pluck('menu_id')
+    ->toArray();
+
+return view('customer.menuCustomer', compact(
+    'categories',
+    'menus',
+    'selectedCategory',
+    'bestSellerIds'
+));
 }
+
     public function detail($id)
     {
         $menu = Menu::findOrFail($id);

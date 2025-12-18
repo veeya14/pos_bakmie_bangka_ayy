@@ -6,14 +6,43 @@
 <div class="container-fluid px-4">
 
     {{-- Filter --}}
-    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-        <input type="date" class="form-control w-auto shadow-sm" />
-        <input type="text" class="form-control w-auto shadow-sm" placeholder="Search Order ID" />
-        <select class="form-select w-auto shadow-sm">
-            <option value="">All Payment Method</option>
-            <option value="QRIS">QRIS</option>
-        </select>
-    </div>
+    <form method="GET"
+      action="{{ route('seller.orders.history') }}"
+      class="d-flex flex-wrap align-items-center gap-3 mb-4">
+
+    <input type="date"
+           name="date"
+           class="form-control w-auto shadow-sm" />
+
+    <input type="text"
+           name="search"
+           class="form-control w-auto shadow-sm"
+           placeholder="Search Order ID"
+           value="{{ request('search') }}" />
+
+    <select name="payment"
+            class="form-select w-auto shadow-sm">
+        <option value="">All Payment Method</option>
+        <option value="QRIS" {{ request('payment') === 'QRIS' ? 'selected' : '' }}>
+            QRIS
+        </option>
+    </select>
+
+    {{--  FILTER STATUS  --}}
+    <select name="status"
+            class="form-select w-auto shadow-sm"
+            onchange="this.form.submit()">
+        <option value="">All Status</option>
+        <option value="FINISH" {{ request('status') === 'FINISH' ? 'selected' : '' }}>
+            Finish
+        </option>
+        <option value="CANCEL" {{ request('status') === 'CANCEL' ? 'selected' : '' }}>
+            Cancel
+        </option>
+    </select>
+
+</form>
+
 
     {{-- TABLE --}}
     <div class="card shadow-sm border-0 rounded-4">
@@ -46,7 +75,7 @@
                         <td>{{ $order->customer_name ?? '-' }}</td>
 
                         <td>
-                          {{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+                          {{ 'MEJA-' . str_pad($order->meja_number, 2, '0', STR_PAD_LEFT) }}
                         </td>
 
                         {{-- PAYMENT METHOD --}}
@@ -111,14 +140,27 @@
 </p>
 
 <p><strong>Table Number:</strong>
-{{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+{{ 'MEJA-' . str_pad($order->meja_number, 2, '0', STR_PAD_LEFT) }}
 </p>
 
 <p><strong>Payment Method:</strong>
     {{ $order->payment?->payment_method ?? 'QRIS' }}
 </p>
 
+{{-- STATUS ORDER --}}
+<p>
+    <strong>Status:</strong>
+
+    @if ($order->status_order === 'CLOSE' && $order->status_bayar === 'UNPAID')
+        <span class="badge bg-danger ms-2">Cancelled</span>
+    @elseif ($order->status_order === 'CLOSE' && $order->status_bayar === 'PAID')
+        <span class="badge bg-success ms-2">Finish</span>
+    @endif
+</p>
+
+
 <hr>
+
 
 
                 <table class="table align-middle">

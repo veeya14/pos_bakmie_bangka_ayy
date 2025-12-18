@@ -27,11 +27,11 @@
     <div style="text-align: center;">
         <h2 class="orderSent-title mb-3" id="orderStatusText">
             @if ($order->status_order === 'OPEN' && $order->status_bayar === 'PAID')
-                Pesanan Dibuat
+                Order is being prepared
             @elseif ($order->status_order === 'CLOSE' && $order->status_bayar === 'PAID')
-                Pesanan Terkirim
+                Order Completed
             @else
-                Pesanan Dibuat
+                Order is being prepared
             @endif
         </h2>
     </div>
@@ -58,7 +58,7 @@
 <div class="orderSent-row">
     <span class="orderSent-label">Table Number</span>
     <span class="orderSent-value">
-        {{ 'MEJA-' . str_pad(max(1, (int) $order->meja_number), 2, '0', STR_PAD_LEFT) }}
+        {{ 'MEJA-' . str_pad($order->meja_number, 2, '0', STR_PAD_LEFT) }}
     </span>
 </div>
 
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let interval = setInterval(() => {
         countdown--;
         timerDisplay.textContent = countdown;
-        progressBar.style.width = ((60 - countdown) / 60 * 300) + "px";
+        progressBar.style.width = ((60 - countdown) / 60 * 100) + "%";
 
         if (countdown <= 0) {
             clearInterval(interval);

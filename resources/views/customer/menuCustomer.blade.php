@@ -51,10 +51,9 @@
 
     {{-- Order ID Button --}}
     <a href="{{ route('customer.viewOrder') }}" class="btn-order-id">
-        Order ID
+        View Order
     </a>
 </div>
-
 
 
 </div>
@@ -89,8 +88,14 @@
         {{-- Menu list --}}
         <div class="row g-4">
             @foreach ($menus as $menu)
-                <div class="col">
-                    <div class="menu-card p-2">
+                <div class="col-6 col-md-4">
+                    <div class="menu-card p-2 position-relative">
+                        @if (in_array($menu->id_menu, $bestSellerIds))
+                            <span class="badge-best-seller">
+                                👍 Best Seller
+                            </span>
+                        @endif
+
 
                         {{-- Gambar dari database --}}
                        <img src="{{ asset($menu->menu_image) }}" alt="{{ $menu->menu_name }}" class="img-fluid mx-auto d-block">
@@ -108,10 +113,9 @@
 
 {{-- ADD TO CART --}}
 <a href="{{ route('customer.menu.detail', $menu->id_menu) }}"
-   class="btn btn-sm d-flex justify-content-center align-items-center">
-    <i class="bi bi-plus btn-plus"></i>
+                   class="btn-plus-circle">
+                    +
 </a>
-
 
                         </div>
                     </div>

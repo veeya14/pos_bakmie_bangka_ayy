@@ -20,27 +20,6 @@ class SellerAuthController extends Controller
     }
 
 
-    public function showRegister()
-    {
-        return view('seller.register');
-    }
-
-    // === REGISTER SELLER ===
-    public function register(Request $request)
-    {
-        $request->validate([
-            'email'     => 'required|email|unique:sellers,email',
-            'password'  => 'required|min:6|confirmed'
-        ]);
-
-        Seller::create([
-            'email'    => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
-
-        return redirect()->route('seller.login')->with('success', 'Akun berhasil dibuat, silakan login.');
-    }
-
     // === LOGIN HANDLER ===
     public function login(Request $request)
     {

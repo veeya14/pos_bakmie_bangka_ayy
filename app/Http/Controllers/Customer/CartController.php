@@ -8,11 +8,7 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    /**
-     * =========================
-     * VIEW CART
-     * =========================
-     */
+
     public function index()
     {
         $cart = session()->get('cart', []);
@@ -21,11 +17,7 @@ class CartController extends Controller
         return view('customer.order', compact('cart', 'cartCount'));
     }
 
-    /**
-     * =========================
-     * ADD TO CART
-     * =========================
-     */
+    // add to cart
     public function add(Request $request)
 {
     $request->validate([
@@ -37,11 +29,11 @@ class CartController extends Controller
 
     $cart = session()->get('cart', []);
 
-    // 🔥 PAKAI PK ASLI
+   
     $menuId = $menu->id_menu;
 
     $cart[$menuId] = [
-        'menu_id' => $menu->id_menu, // ← WAJIB ADA
+        'menu_id' => $menu->id_menu, 
         'name'    => $menu->menu_name,
         'price'   => $menu->menu_price,
         'qty'     => ($cart[$menuId]['qty'] ?? 0) + ($request->qty ?? 1),

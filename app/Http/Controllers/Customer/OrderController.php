@@ -10,11 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    /**
-     * =========================
-     * CREATE ORDER
-     * =========================
-     */
+
     public function store(Request $request)
     {
         $request->validate([

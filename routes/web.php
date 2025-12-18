@@ -2,10 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\ProfileController;
 use App\Http\Controllers\Seller\MenuController as SellerMenuController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\PaymentController;
 use App\Http\Controllers\Seller\SellerAuthController;
+use App\Http\Controllers\Seller\CategoryController;
 use App\Http\Middleware\CheckSellerSession;
 use App\Http\Controllers\Customer\MenuController as CustomerMenuController;
 use App\Http\Controllers\Customer\CartController;
@@ -92,11 +94,21 @@ Route::prefix('seller')->name('seller.')->middleware(CheckSellerSession::class)-
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])
         ->name('orders.updateStatus');
+    Route::post('categories', [CategoryController::class, 'store'])
+    ->name('categories.store');
 
     Route::get('order-history', [OrderController::class, 'history'])->name('orders.history');
 
     Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+    Route::get('profile', [ProfileController::class, 'index'])
+        ->name('profile');
+
+    Route::patch('profile', [ProfileController::class, 'updateProfile'])
+        ->name('profile.update');
+
+    Route::patch('profile/password', [ProfileController::class, 'updatePassword'])
+        ->name('profile.password');
 });
 
 
