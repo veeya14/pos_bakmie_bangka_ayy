@@ -17,8 +17,7 @@
             ? asset('storage/' . $seller->photo)
             : asset('image/profile.jpg') }}"
         class="rounded-circle"
-        style="width: 100px; height: 100px; object-fit: cover;"
-    >
+        style="width: 100px; height: 100px; object-fit: cover;">
 
     {{-- ICON UPLOAD FOTO --}}
     <form method="POST"

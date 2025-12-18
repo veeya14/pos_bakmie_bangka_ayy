@@ -24,7 +24,7 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
 {
     $seller = Seller::find(session('seller_id'));
-    // === KHUSUS UPLOAD FOTO DARI ICON ===
+    
 if ($request->hasFile('photo') && !$request->has('name')) {
 
     if ($seller->photo && file_exists(storage_path('app/public/' . $seller->photo))) {

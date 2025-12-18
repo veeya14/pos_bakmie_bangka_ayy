@@ -27,11 +27,11 @@
     <div style="text-align: center;">
         <h2 class="orderSent-title mb-3" id="orderStatusText">
             @if ($order->status_order === 'OPEN' && $order->status_bayar === 'PAID')
-                Order is being prepared
+                Preparing Order
             @elseif ($order->status_order === 'CLOSE' && $order->status_bayar === 'PAID')
                 Order Completed
             @else
-                Order is being prepared
+                Preparing Order
             @endif
         </h2>
     </div>
